@@ -40,11 +40,11 @@ public class Person {
 		for (Person person : persons) {
 			if (person != null) {
 				// if the list is empty, just add the person 
-				// NOTE: I'm not actually sure if this is necessary but better to be safe
 				if (ret.isEmpty()){
 					ret.add(person);
 				} else{
-					for (Person guy : ret) {
+					for (int i = 0; i < ret.size(); i++) {
+						Person guy = ret.get(i);
 						// defend against a null name/birthplace/birthdate
 						if (person.getName() != null && person.getBirthplace() != null && person.getBirthdate() != null){
 							if (!person.getName().equals(guy.getName()) && !person.getBirthplace().equals(guy.getBirthplace()) && !person.getBirthdate().equals(guy.getBirthdate())) {
@@ -55,7 +55,6 @@ public class Person {
 				}
 			}
 		}
-		System.out.println(ret);
 		return ret;
 	}
 
@@ -64,10 +63,21 @@ public class Person {
 		List<Person> list = new LinkedList<>();
 		Person guyA = new Person("Todd Howard", "Florida", new Date(2013, 9, 2));
 		Person guyB = new Person("John Madden", "Ohio", new Date(2017, 8, 5));
+		Person guyC = new Person("silly", null, new Date(2017, 8, 5));
+		Person guyD = new Person("Todd Howard", "Florida", new Date(2013, 9, 2));
 
 		list.add(guyA);
 		list.add(guyB);
+		list.add(guyC);
+		list.add(guyD);
 
-		findDistinct(list);
+		List<Person> ret = findDistinct(list);
+		for (int i = 0; i < ret.size(); i++) {
+			Person person = ret.get(i);
+			System.out.println(person.getName());
+		}
+
+		// check catching Null
+		ret = findDistinct(null);
 	}
 }
