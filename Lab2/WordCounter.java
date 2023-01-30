@@ -41,15 +41,11 @@ public class WordCounter {
 		return words;
 	}
 	
-	/*
-	 * Execution lower time ideas:
-	 * itt over and make an array list for each with only unique words (?) <- not space efficient but w/e
-	 * ????
-	 */
 	public static List<String> wordsInCommon(List<String> list1, List<String> list2) {
 		
 		List<String> common = new LinkedList<>();
 		
+		// removed get() because that's slow for LinkedLists :/
 		for (String word1 : list1) {
 			for (String word2 : list2) {
 				if (word1.equals(word2)) {
