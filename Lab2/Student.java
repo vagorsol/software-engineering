@@ -12,7 +12,7 @@ public class Student {
 	}
 	
 	public void add(Grade g) {
-		 grades.add(g); 		
+		grades.add(g); 		
 	}
 	
 
