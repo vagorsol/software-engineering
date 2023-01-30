@@ -50,20 +50,17 @@ public class WordCounter {
 		
 		List<String> common = new LinkedList<>();
 		
-		for (int i = 0; i < list1.size(); i++) {
-			// String currI = list1.get(i);
-			for (int j = 0; j < list2.size(); j++) {
-				// String currJ = list2.get(j);
-				if (list1.get(i).equals(list2.get(j))) {
-					if (common.contains(list1.get(i)) == false) {
-						common.add(list1.get(i));
+		for (String word1 : list1) {
+			for (String word2 : list2) {
+				if (word1.equals(word2)) {
+					if (common.contains(word1) == false) {
+						common.add(word1);
 					}
 				}
 			}
 		}
 		
 		return common;
-		
 	}
 	
 	
