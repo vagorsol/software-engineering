@@ -2,6 +2,10 @@
  * This class contains the methods used for conducting a simple sentiment analysis.
  */
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 
 public class Analyzer {
@@ -14,10 +18,49 @@ public class Analyzer {
 	 * @return Set containing one Sentence object per sentence in the input file
 	 */
 	public static Set<Sentence> readFile(String filename) {
-		/*
-		 * Implement this method in Part 1
-		 */
-		return null;
+		Set<Sentence> sents = new HashSet<>(); // TODO: idk which set i want to use :/
+		
+		// open and read file
+		try (BufferedReader reader = new BufferedReader(new FileReader(filename))){
+			String line = null;
+
+			// get sentence and score
+			while ((line = reader.readLine()) != null) {
+
+				String[] splitLine = line.split(" ");
+				int score = 0;
+				String text; 
+				
+				// check if the line is not followed by any text
+				if (splitLine.length > 2) {
+					// tries to get the score. igonres the line if it can't (whether isn't int or doesn't have a score)
+					try {
+						score = Integer.parseInt(splitLine[0]);
+
+						// checks to see if the score is within the range [-2,2]. if not, skip
+						if (score < -2 || score > 2) {
+							continue;
+						} else { 
+							// get the string
+							text = String.join(" ", Arrays.copyOfRange(splitLine, 1,  splitLine.length)); 
+
+							// add Sentence Object to Set
+							Sentence sent = new Sentence(score, text);
+							sents.add(sent);
+						}
+					} catch(NumberFormatException e){
+						continue; 
+					}
+				}				
+			}
+		} catch(FileNotFoundException fnf) {
+			System.out.println("Invalid data!");
+			return null;
+		} catch(IOException e) {
+			System.out.println("Invalid data!");
+			return null; 
+		}
+		return sents;
 	}
 
 	/**
@@ -53,6 +96,8 @@ public class Analyzer {
 	}
 	
 	public static void main(String[] args) {
+		Set<Sentence> sents = readFile("test.txt");
+		System.out.println(sents);
 		/*
 		 * Implement this method in Part 4
 		 */

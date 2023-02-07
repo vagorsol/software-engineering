@@ -1,0 +1,6 @@
+20 My number is too large !
+1.7 my number is not an int !
+I am missing a number !
+0
+1 This is a valid sentence !
+-2 Please don't ask why I am doing this at 1 am Chris . 
