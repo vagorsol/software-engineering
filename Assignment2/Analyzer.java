@@ -77,7 +77,6 @@ public class Analyzer {
 	 * @return Map of each word to its weighted average
 	 */
 	public static Map<String, Double> calculateWordScores(Set<Sentence> sentences) {
-		// TODO: "missing or invalid" cases (that are not null/empty), whatever that means
 		Map<String, Double> ret = new HashMap<>();
 		Map<String, Integer> count = new HashMap<>(); // keeps track of how many times a word appears in total (to calculate averages)
 
@@ -161,15 +160,35 @@ public class Analyzer {
 	}
 	
 	public static void main(String[] args) {
-		Set<Sentence> sents = readFile("test.txt");
-		// Set<Sentence> sents = new HashSet<>(); // testing empty set
+		// reads file name as an argument - implement later
+		if (args.length < 1) {
+			System.out.println("Please enter a file name!");
+			return;
+		}
+
+		String filename = args[0]; 
+
+		Set<Sentence> sents = readFile(filename);
+		if (sents == null) {
+			return;
+		}
+
 		Map<String, Double> avgs = calculateWordScores(sents);
-		System.out.println(avgs);
 
-		System.out.println(calculateSentenceScore(avgs, null));
-		/*
-		 * Implement this method in Part 4
-		 */
+		try (Scanner scanner = new Scanner(System.in)) {
+			do {
+				System.out.print("Enter a sentence: ");
+				String sentence = scanner.nextLine(); 
+
+				if (sentence.equals("quit")) {
+					System.out.println("Goodbye!");
+					break; 
+				}
+
+				double average = calculateSentenceScore(avgs, sentence);
+				System.out.format("The score of your sentence \"%s\" is %.3f\n", sentence, average);
+
+			} while(true); // program will keep going until user exits
+		}
 	}
-
 }
