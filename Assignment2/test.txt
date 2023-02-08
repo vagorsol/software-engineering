@@ -2,5 +2,6 @@
 1.7 my number is not an int !
 I am missing a number !
 0
-1 This is a valid sentence !
--2 Please don't ask why I am doing this at 1 am Chris . 
+2 I like cake and could eat cake all day .
+1 I hope the dog does not eat my cake . 
+1 It 's a lot of fun to learn a about data structure n't .

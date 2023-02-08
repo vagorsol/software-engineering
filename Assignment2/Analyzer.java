@@ -77,9 +77,8 @@ public class Analyzer {
 	 * @return Map of each word to its weighted average
 	 */
 	public static Map<String, Double> calculateWordScores(Set<Sentence> sentences) {
-		Map<String, Double> ret = new HashMap<>(); // i also do not know map decision. i don't see benefit to tree basically is the choice
+		Map<String, Double> ret = new HashMap<>();
 		Map<String, Integer> count = new HashMap<>(); // keeps track of how many times a word appears in total (to calculate averages)
-		char[] punct = {'.', ',', ';', ':', '?', '!', '"', '\'', ')', '('};
 
 		// check if sentences is null or empty
 		if (sentences == null || sentences.isEmpty()) {
@@ -93,17 +92,9 @@ public class Analyzer {
 			
 			// add all words in sentence
 			for (String word : line) {
-				// check if word starts with a non letter
-				boolean isPunct = false;
-				for (char pun : punct) {
-					if (word.charAt(0) == pun){
-						isPunct = true;
-						break;					
-					}
-				}
-				
-				// only add word that doesn't start with a punctuation
-				if (!isPunct){
+				// check if word starts with a non letter. proceed if it doesn't
+				if (!String.valueOf(word.charAt(0)).matches("\\W")){
+
 					// check if the word is already in the bank - if so, update value. also sigh average.
 					if (ret.containsKey(word)) {
 						double sum = ret.get(word);
@@ -118,8 +109,6 @@ public class Analyzer {
 						count.put(word, 1);
 					}
 				}
-				
-				System.out.println(word); // testing
 			}
 		}
 		
@@ -151,8 +140,10 @@ public class Analyzer {
 	}
 	
 	public static void main(String[] args) {
-		/*Set<Sentence> sents = readFile(null);
-		System.out.println(sents);*/
+		Set<Sentence> sents = readFile("test.txt");
+		// Set<Sentence> sents = new HashSet<>(); // testing empty set
+		Map<String, Double> avgs = calculateWordScores(sents);
+		System.out.println(avgs);
 		/*
 		 * Implement this method in Part 4
 		 */
