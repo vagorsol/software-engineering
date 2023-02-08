@@ -97,7 +97,7 @@ public class Analyzer {
 				// check if word starts with a non letter. proceed if it doesn't
 				if (!String.valueOf(word.charAt(0)).matches("\\W")){
 
-					// check if the word is already in the bank - if so, update value. also sigh average.
+					// check if the word is already in the bank - if so, update value
 					if (ret.containsKey(word)) {
 						double sum = ret.get(word);
 						sum += (double) sent.getScore(); 
@@ -116,9 +116,7 @@ public class Analyzer {
 		
 		// calculate averages
 		for (Map.Entry<String, Double> word: ret.entrySet()){
-			int div = count.get(word.getKey());
-
-			ret.put(word.getKey(), word.getValue() / div );
+			ret.put(word.getKey(), word.getValue() / (double) count.get(word.getKey()));
 		}
 
 		return ret;
