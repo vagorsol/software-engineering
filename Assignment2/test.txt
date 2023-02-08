@@ -3,5 +3,5 @@
 I am missing a number !
 0
 2 I like cake and could eat cake all day .
-1 I hope the dog does not eat my cake . 
+1 I hope the dog does not eat my cake are . 
 1 It 's a lot of fun to learn a about data structure n't .

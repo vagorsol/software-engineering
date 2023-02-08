@@ -153,6 +153,10 @@ public class Analyzer {
 			}
 		}
 
+		// if none of the values are in the word bank, so that it doesn't return NaN
+		if (count == 0) {
+			return 0;
+		}
 		return score / (double) count;
 	}
 	
@@ -161,6 +165,8 @@ public class Analyzer {
 		// Set<Sentence> sents = new HashSet<>(); // testing empty set
 		Map<String, Double> avgs = calculateWordScores(sents);
 		System.out.println(avgs);
+
+		System.out.println(calculateSentenceScore(avgs, null));
 		/*
 		 * Implement this method in Part 4
 		 */
