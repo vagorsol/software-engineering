@@ -41,6 +41,10 @@ public class Sentence  {
 	}
 
 	/* Add methods and instance variables below as needed */
-
+	// I think I need to add the hashCode. dunno if this is what we're looking for. check back later (probably not lbr (the r stands for realistic))
+	@Override
+	public int hashCode(){
+		return this.text.hashCode();
+	}
 	
 }

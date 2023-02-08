@@ -18,7 +18,7 @@ public class Analyzer {
 	 * @return Set containing one Sentence object per sentence in the input file
 	 */
 	public static Set<Sentence> readFile(String filename) {
-		Set<Sentence> sents = new HashSet<>(); // TODO: idk which set i want to use :/
+		Set<Sentence> sents = new HashSet<>();
 		
 		// open and read file
 		try (BufferedReader reader = new BufferedReader(new FileReader(filename))){
@@ -53,13 +53,18 @@ public class Analyzer {
 					}
 				}				
 			}
-		} catch(FileNotFoundException fnf) {
-			System.out.println("Invalid data!");
+		} catch (FileNotFoundException fnf) {
+			System.out.println("Invalid file name!");
 			return null;
-		} catch(IOException e) {
+		} catch (IOException e) {
 			System.out.println("Invalid data!");
 			return null; 
+		} catch (NullPointerException n) {
+			System.out.println("Invalid file name!");
+			return null;
 		}
+		// I have no clue if I'm doing the "throw an IllegalArgumentException" part in the above properly
+
 		return sents;
 	}
 
@@ -72,10 +77,60 @@ public class Analyzer {
 	 * @return Map of each word to its weighted average
 	 */
 	public static Map<String, Double> calculateWordScores(Set<Sentence> sentences) {
-		/*
-		 * Implement this method in Part 2
-		 */
-		return null;
+		Map<String, Double> ret = new HashMap<>(); // i also do not know map decision. i don't see benefit to tree basically is the choice
+		Map<String, Integer> count = new HashMap<>(); // keeps track of how many times a word appears in total (to calculate averages)
+		char[] punct = {'.', ',', ';', ':', '?', '!', '"', '\'', ')', '('};
+
+		// check if sentences is null or empty
+		if (sentences == null || sentences.isEmpty()) {
+			return ret;
+		}
+	
+		// get values of words 
+		for (Sentence sent : sentences) {
+			// get the string + make all of the letters lowercase
+			String[] line = sent.getText().toLowerCase().split(" ");
+			
+			// add all words in sentence
+			for (String word : line) {
+				// check if word starts with a non letter
+				boolean isPunct = false;
+				for (char pun : punct) {
+					if (word.charAt(0) == pun){
+						isPunct = true;
+						break;					
+					}
+				}
+				
+				// only add word that doesn't start with a punctuation
+				if (!isPunct){
+					// check if the word is already in the bank - if so, update value. also sigh average.
+					if (ret.containsKey(word)) {
+						double sum = ret.get(word);
+						sum += (double) sent.getScore(); 
+
+						// update values
+						ret.put(word, sum);
+						count.put(word, count.get(word) + 1);
+					} else {
+						// create word 
+						ret.put(word, (double) sent.getScore());
+						count.put(word, 1);
+					}
+				}
+				
+				System.out.println(word); // testing
+			}
+		}
+		
+		// calculate averages
+		for (Map.Entry<String, Double> word: ret.entrySet()){
+			int div = count.get(word.getKey());
+
+			ret.put(word.getKey(), word.getValue() / div );
+		}
+
+		return ret;
 	}
 	
 	/**
@@ -96,8 +151,8 @@ public class Analyzer {
 	}
 	
 	public static void main(String[] args) {
-		Set<Sentence> sents = readFile("test.txt");
-		System.out.println(sents);
+		/*Set<Sentence> sents = readFile(null);
+		System.out.println(sents);*/
 		/*
 		 * Implement this method in Part 4
 		 */
