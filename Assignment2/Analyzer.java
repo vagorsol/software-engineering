@@ -9,7 +9,9 @@ import java.io.IOException;
 import java.util.*;
 
 public class Analyzer {
-	
+	// Memoization: stores scores of previously entered sentences
+	private static Map<String, Double> results = new HashMap<>();
+
 	/**
 	 * This method reads sentences from the input file, creates a Sentence object
 	 * for each, and returns a Set of the Sentences.
@@ -54,13 +56,13 @@ public class Analyzer {
 				}				
 			}
 		} catch (FileNotFoundException fnf) {
-			System.out.println("Invalid file name!");
+			System.out.println("Bad input file!");
 			return null;
 		} catch (IOException e) {
 			System.out.println("Invalid data!");
 			return null; 
 		} catch (NullPointerException n) {
-			System.out.println("Invalid file name!");
+			System.out.println("Bad input file!");
 			return null;
 		}
 		// I have no clue if I'm doing the "throw an IllegalArgumentException" part in the above properly
@@ -138,13 +140,17 @@ public class Analyzer {
 			return 0;
 		}
 
+		if (results.containsKey(sentence)){
+			return results.get(sentence);
+		}
+
 		String[] words = sentence.toLowerCase().split(" "); // assuming there is no punctuation. i guess? 
 		
 		double score = 0.0;
 		int count = 0;
 		
 		for (String word : words) {
-			if(wordScores.get(word) != null){
+			if(wordScores.containsKey(word)){
 				score += wordScores.get(word);
 				count++;
 			} else if (wordScores.get(word) != null && !String.valueOf(word.charAt(0)).matches("\\W")){
@@ -154,9 +160,14 @@ public class Analyzer {
 
 		// if none of the values are in the word bank, so that it doesn't return NaN
 		if (count == 0) {
-			return 0;
+			score = 0;
+		} else {
+			score = score / (double) count;
 		}
-		return score / (double) count;
+
+		// add sentece + calculated score to the memoization
+		results.put(sentence, score);
+		return score;
 	}
 	
 	public static void main(String[] args) {
