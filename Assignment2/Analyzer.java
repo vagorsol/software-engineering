@@ -77,6 +77,7 @@ public class Analyzer {
 	 * @return Map of each word to its weighted average
 	 */
 	public static Map<String, Double> calculateWordScores(Set<Sentence> sentences) {
+		// TODO: "missing or invalid" cases (that are not null/empty), whatever that means
 		Map<String, Double> ret = new HashMap<>();
 		Map<String, Integer> count = new HashMap<>(); // keeps track of how many times a word appears in total (to calculate averages)
 
@@ -133,10 +134,26 @@ public class Analyzer {
 	 * @return Weighted average scores of all words in input sentence
 	 */
 	public static double calculateSentenceScore(Map<String, Double> wordScores, String sentence) {
-		/*
-		 * Implement this method in Part 3
-		 */
-		return 0;
+		// check if any of the parameters are missing or invalid (null and/or empty)
+		if (wordScores == null || wordScores.isEmpty() || sentence == null || sentence.isEmpty()) {
+			return 0;
+		}
+
+		String[] words = sentence.toLowerCase().split(" "); // assuming there is no punctuation. i guess? 
+		
+		double score = 0.0;
+		int count = 0;
+		
+		for (String word : words) {
+			if(wordScores.get(word) != null){
+				score += wordScores.get(word);
+				count++;
+			} else if (wordScores.get(word) != null && !String.valueOf(word.charAt(0)).matches("\\W")){
+				count++;
+			}
+		}
+
+		return score / (double) count;
 	}
 	
 	public static void main(String[] args) {
