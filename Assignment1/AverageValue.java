@@ -41,9 +41,7 @@ public class AverageValue {
                     // checks if the Nth place on the line even exists - if not, ignores and continues
                     continue; 
                 } else if(fmtLine[N].isEmpty() || fmtLine[N] == null) {
-                    // check if there is a (valid, i.e., not null or empty) value
-                    sum += 0;
-                    lineNo++;
+                    continue;
                 } else {
                     // tries to add the entry, ignores if not a number
                     try {
