@@ -5,7 +5,6 @@ import java.io.IOException;
 
 /*
  * Calculates & display the average of numerical values in the Nth field of each line of the file (aka column)
- * NOTE: not sure if this is CSV compliant. I think it is
  */
 public class AverageValue {
     public static void main(String[] args) {
@@ -37,22 +36,21 @@ public class AverageValue {
             while (((line = reader.readLine()) != null)) {
                 String[] fmtLine = line.split(",");
 
-                if (fmtLine.length < N + 1) {
-                    // checks if the Nth place on the line even exists
-                    System.out.println("Invalid data"); 
-                    return; 
+                // System.out.println(fmtLine.length + " " + N);
+                if (fmtLine.length <= N) {
+                    // checks if the Nth place on the line even exists - if not, ignores and continues
+                    continue; 
                 } else if(fmtLine[N].isEmpty() || fmtLine[N] == null) {
                     // check if there is a (valid, i.e., not null or empty) value
                     sum += 0;
                     lineNo++;
                 } else {
-                    // tries to add the entry, and handles if the value is not a number 
+                    // tries to add the entry, ignores if not a number
                     try {
                         sum += Double.parseDouble(fmtLine[N]);
                         lineNo++;
                     } catch(NumberFormatException e) {
-                        System.out.println("Ivalid data");
-                        return;
+                        continue;
                     }
                 }
             }
