@@ -1,7 +1,12 @@
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 public class FluTweets {
@@ -57,19 +62,21 @@ public class FluTweets {
         // System.out.println("Log file name: " + logfn); 
 
 
-        // read data file - make DS?
         // TODO - figure out CL inputs + this because it got WEIRD :(
+        // read the data file and put it in a data structure
+        HashMap<String, Double[]> states = new HashMap<String, Double[]>();
         JSONParser parser = new JSONParser();
+
         try {
             Object obj = parser.parse(new FileReader(datafn));
             JSONArray ja = (JSONArray) obj;
-            System.out.println(ja);
 
-            // Iterator itt = ja.iterator();
+            Iterator itt = ja.iterator();
 
-            // while (itt.hasNext()){
-            //     System.out.println(itt.next());
-            // }
+            while (itt.hasNext()){
+                JSONObject jo = (JSONObject) itt.next();
+                states.put((String) jo.get("name"), new Double[]{(Double) jo.get("latitude"), (Double) jo.get("longitude")});
+            }
         } catch (FileNotFoundException fnf) {
             System.out.println("Could not find the file! Make sure you entered the right file name!");
             return;
@@ -77,8 +84,10 @@ public class FluTweets {
             System.out.println("Cannot open the file!");
             return;
         } catch (org.json.simple.parser.ParseException e) {
-            System.out.println("Cannot open the file!");
+            System.out.println("Cannot read the file!");
             return;
         }
+
+        states.forEach((k,v) -> System.out.println(k + " " + v[0] + " " + v[1]));
     }
 }
