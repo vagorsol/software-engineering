@@ -1,6 +1,4 @@
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -16,9 +14,10 @@ public class FluTweets {
         //     return;
         // }
 
+        // TODO - figure out CL inputs because it got WEIRD :(
         String statefn = "states.json"; // "";
         String datafn = "flu_tweets.json"; // "";
-        // String logfn = "";
+        String logfn = ""; // "";
 
         // // get the filenames
         // for (int i = 0; i < args.length; i++){
@@ -56,10 +55,9 @@ public class FluTweets {
         // }
 
         JSONParser parser = new JSONParser();
-        // TODO - figure out CL inputs because it got WEIRD :(
+        
         // read the data file and put it in a data structure
         HashMap<String, Double[]> states = new HashMap<String, Double[]>();
-        
 
         try {
             Object obj = parser.parse(new FileReader(statefn));
@@ -82,10 +80,6 @@ public class FluTweets {
             System.out.println("Cannot read the states file!");
             return;
         }
-
-        // verifying that got data in good yeah
-        // states.forEach((k,v) -> System.out.println(k + " " + v[0] + " " + v[1]));
-
 
         // read the tweets file and put them in a list
         List<Tweet> tweets = new ArrayList<>(); 
@@ -120,7 +114,14 @@ public class FluTweets {
             return;
         }
 
-        // tweets.forEach(x -> System.out.println(x.getText()));
         // TODO: then open/logging log tweets. might want to make a "test file" 
+        try {
+            BufferedWriter log = new BufferedWriter(new FileWriter(logfn));
+            log.write("this shit sucks"); // test text
+            log.close(); // omg C kinning! 
+            System.out.println("Check your files");
+        } catch (IOException e) {
+            System.out.printf("Unable to write to %s, is the log name correct and/or of the correct format?\n", logfn);
+        }
     }
 }
