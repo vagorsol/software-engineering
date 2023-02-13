@@ -1,16 +1,14 @@
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
+import java.util.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 public class FluTweets {
-    
+    // javac --release 8 -cp "json-simple-1.1.1.jar;." FluTweets.java
+    // java -cp "json-simple-1.1.1.jar;." FluTweets
     public static void main(String[] args) {         
         // // get runtime (CL?) arguments 
         // if (args.length < 3) {
@@ -18,8 +16,8 @@ public class FluTweets {
         //     return;
         // }
 
-        String datafn = "states.json"; // "";
-        // String statefn = "";
+        String statefn = "states.json"; // "";
+        String datafn = "flu_tweets.json"; // "";
         // String logfn = "";
 
         // // get the filenames
@@ -56,38 +54,73 @@ public class FluTweets {
         //     System.out.println("One or more file names is missing! Please check that you included them all!");
         //     return;
         // }
-    
-        // System.out.println("Data file name: " + datafn);
-        // System.out.println("State file name: " + statefn);
-        // System.out.println("Log file name: " + logfn); 
 
-
-        // TODO - figure out CL inputs + this because it got WEIRD :(
+        JSONParser parser = new JSONParser();
+        // TODO - figure out CL inputs because it got WEIRD :(
         // read the data file and put it in a data structure
         HashMap<String, Double[]> states = new HashMap<String, Double[]>();
-        JSONParser parser = new JSONParser();
+        
 
         try {
-            Object obj = parser.parse(new FileReader(datafn));
+            Object obj = parser.parse(new FileReader(statefn));
             JSONArray ja = (JSONArray) obj;
 
             Iterator itt = ja.iterator();
 
             while (itt.hasNext()){
                 JSONObject jo = (JSONObject) itt.next();
+                // TODO: protect against bad JSON data
                 states.put((String) jo.get("name"), new Double[]{(Double) jo.get("latitude"), (Double) jo.get("longitude")});
             }
         } catch (FileNotFoundException fnf) {
-            System.out.println("Could not find the file! Make sure you entered the right file name!");
+            System.out.println("Could not find the states file! Make sure you entered the right file name!");
             return;
         } catch (IOException e) {
-            System.out.println("Cannot open the file!");
+            System.out.println("Cannot open the states file!");
             return;
         } catch (org.json.simple.parser.ParseException e) {
-            System.out.println("Cannot read the file!");
+            System.out.println("Cannot read the states file!");
             return;
         }
 
-        states.forEach((k,v) -> System.out.println(k + " " + v[0] + " " + v[1]));
+        // verifying that got data in good yeah
+        // states.forEach((k,v) -> System.out.println(k + " " + v[0] + " " + v[1]));
+
+
+        // read the tweets file and put them in a list
+        List<Tweet> tweets = new ArrayList<>(); 
+        try {
+            Object obj = parser.parse(new FileReader(datafn));
+            JSONArray ja = (JSONArray) obj;
+
+            Iterator itt = ja.iterator();
+
+            while (itt.hasNext()) {
+                // TODO: protect against bad JSON data
+                JSONObject jo = (JSONObject) itt.next(); 
+
+                // get location
+                JSONArray jar = (JSONArray) jo.get("location");
+                Double[] loc = new Double[2];
+                for (int i = 0; i < 2; i++) {
+                    loc[i] = (Double) jar.get(i);
+                }
+
+                tweets.add(new Tweet(loc, (String) jo.get("time"), (String) jo.get("text")));
+            }
+
+        } catch (FileNotFoundException fnf) {
+            System.out.println("Could not find the tweets file! Make sure you entered the right file name!");
+            return;
+        } catch (IOException e) {
+            System.out.println("Cannot open the tweets file!");
+            return;
+        } catch (org.json.simple.parser.ParseException e) {
+            System.out.println("Cannot read the tweets file!");
+            return;
+        }
+
+        // tweets.forEach(x -> System.out.println(x.getText()));
+        // TODO: then open/logging log tweets. might want to make a "test file" 
     }
 }
