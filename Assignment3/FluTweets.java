@@ -36,7 +36,7 @@ public class FluTweets {
             String[] text = tweet.getText().split(" ");
             // System.out.println(text);
             for (String word : text) {
-                if (word.matches("[fF]lu\\W*") || word.matches("#[fF]lu")) {
+                if (word.toLowerCase().matches("flu\\W*") || word.toLowerCase().matches("#flu")) {
                     fluTweets.add(tweet);
                     break; 
                 }
@@ -46,56 +46,94 @@ public class FluTweets {
         return fluTweets;
     }
     
-    public static void main(String[] args) {         
-        // get runtime (CL?) arguments 
-        if (args.length < 3) {
-            System.out.println("Missing file information!");
-            return;
+    /**
+     * Given a list of tweets and states, find which state a tweet is from
+     * 
+     * @param tweets List of tweets that are considered "flu tweets"
+     * @param states List of states 
+     * @return tweetLoc Location and text of each tweet, empty if either params are empty/null
+     */
+    public static List<FluTweet> findDistance(List<Tweet> fluTweets, List<State> states){
+        List<FluTweet> tweetLoc = new ArrayList<>(); 
+        double latDist, longDist, dist, currMin; 
+        String minState = "";
+
+        if (fluTweets.isEmpty() || fluTweets == null || states.isEmpty() || states == null) {
+            return tweetLoc; 
         }
 
-        String statefn = ""; 
-        String datafn = ""; 
+        // calculate distance for each tweet
+        // NOTE: I do not know how to test if this works properly so I'm going to do a bad and not
+        // don't do that
+        for (Tweet tweet : fluTweets) {
+            currMin = 0; 
+            for (State state : states) {
+                // calculate distance
+                latDist = Math.pow(state.getLatitude() - tweet.getLatitude(), 2);
+                longDist = Math.pow(state.getLongitude() - tweet.getLongitude(), 2);
+                dist = Math.sqrt(latDist + longDist);
+
+                // check if the distance is less 
+                if (dist <= currMin || (currMin == 0 && dist > currMin)) {
+                    currMin = dist; 
+                    minState = state.getName();
+                }
+            }
+            tweetLoc.add(new FluTweet(minState, tweet.getText()));
+        }
+
+        return tweetLoc;
+    }
+    public static void main(String[] args) {         
+        // get runtime (CL?) arguments 
+        // if (args.length < 3) {
+        //     System.out.println("Missing file information!");
+        //     return;
+        // }
+
+        String statefn = "states.json"; 
+        String datafn = "test_tweets.json"; 
         String logfn = ""; 
 
         // get the filenames
-        for (int i = 0; i < args.length; i++){
-            if (args[i].contains("-datafile=") && datafn.isEmpty()) {
-                String[] splitStr = args[i].split("=");
-                // check if filename was include (ie. if empty or not)
-                if (splitStr.length < 2) {
-                    break;
-                } else {
-                    datafn = splitStr[1];
-                }
-            } else if (args[i].contains("-statesfile=") && statefn.isEmpty()) {
-                String[] splitStr = args[i].split("=");
+        // for (int i = 0; i < args.length; i++){
+        //     if (args[i].contains("-datafile=") && datafn.isEmpty()) {
+        //         String[] splitStr = args[i].split("=");
+        //         // check if filename was include (ie. if empty or not)
+        //         if (splitStr.length < 2) {
+        //             break;
+        //         } else {
+        //             datafn = splitStr[1];
+        //         }
+        //     } else if (args[i].contains("-statesfile=") && statefn.isEmpty()) {
+        //         String[] splitStr = args[i].split("=");
 
-                if (splitStr.length < 2) {
-                    break;
-                } else {
-                    statefn = splitStr[1];
-                }
-            } else if (args[i].contains("-logfile=") && logfn.isEmpty()) {
-                String[] splitStr = args[i].split("=");
+        //         if (splitStr.length < 2) {
+        //             break;
+        //         } else {
+        //             statefn = splitStr[1];
+        //         }
+        //     } else if (args[i].contains("-logfile=") && logfn.isEmpty()) {
+        //         String[] splitStr = args[i].split("=");
 
-                if (splitStr.length < 2) {
-                    break;
-                } else {
-                    logfn = splitStr[1];
-                }
-            }
-        }
+        //         if (splitStr.length < 2) {
+        //             break;
+        //         } else {
+        //             logfn = splitStr[1];
+        //         }
+        //     }
+        // }
 
         // check if all the filenames have been given. if not, error message and exit
-        if (datafn.isEmpty() || statefn.isEmpty() || logfn.isEmpty()) {
-            System.out.println("One or more files is missing!");
-            return;
-        }
+        // if (datafn.isEmpty() || statefn.isEmpty() || logfn.isEmpty()) {
+        //     System.out.println("One or more files is missing!");
+        //     return;
+        // }
 
         JSONParser parser = new JSONParser();
         
         // read the data file and put it in a data structure
-        HashMap<String, Double[]> states = new HashMap<String, Double[]>();
+        List<State> states = new ArrayList<>();
 
         try {
             Object obj = parser.parse(new FileReader(statefn));
@@ -105,7 +143,7 @@ public class FluTweets {
 
             while (itt.hasNext()){
                 JSONObject jo = (JSONObject) itt.next();
-                states.put((String) jo.get("name"), new Double[]{(Double) jo.get("latitude"), (Double) jo.get("longitude")});
+                states.add(new State((String) jo.get("name"), (Double) jo.get("latitude"), (Double) jo.get("longitude")));
             }
         } catch (FileNotFoundException fnf) {
             System.out.println("Error reading states file");
@@ -140,7 +178,7 @@ public class FluTweets {
                     loc[i] = (Double) jar.get(i);
                 }
 
-                tweets.add(new Tweet(loc, (String) jo.get("time"), (String) jo.get("text")));
+                tweets.add(new Tweet(loc[0], loc[1], (String) jo.get("time"), (String) jo.get("text")));
             }
 
         } catch (FileNotFoundException fnf) {
@@ -159,6 +197,12 @@ public class FluTweets {
 
         // go through tweets and get all ones with "flu" in them
         List<Tweet> fluTweets = findFluTweets(tweets);
+
+        // determine location of all "flu" tweets
+        List<FluTweet> tweetLoc = findDistance(fluTweets, states);
+        for (FluTweet tweet : tweetLoc) {
+            System.out.println(tweet.getState() + "\t\t" + tweet.getText());
+        }
 
         // TODO: logging tweets
         try {
