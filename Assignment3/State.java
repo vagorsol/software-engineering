@@ -1,3 +1,8 @@
+/**
+ * Object type that stores name + location of a state
+ * @author aqyang
+ */
+
 public class State {
     private String name;
     private Double latitude; 

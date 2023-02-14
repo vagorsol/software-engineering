@@ -1,5 +1,10 @@
+/**
+ * Object type to store the contents of and the state that a 
+ * "flu tweet" is from
+ * @author aqyang
+ */
+
 public class FluTweet {
-    // my class naming will *definitly* not confuse anyone (lying)
 
     private String state;
     private String text;

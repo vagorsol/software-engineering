@@ -4,10 +4,20 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+/**
+ * Main program for assignment 4
+ * Given a states file (JSON), a tweets file (JSON), and a log file name:
+ *      - identifies all tweets that are considered "flu" tweets
+ *      - finds the state they were made from (approximately, based on long/lat)
+ *      - write all flu tweets & the state they're from in the log file
+ *      - output the number of flu tweets from each state, if any
+ * NOTE: to compile / run:
+ *      javac --release 8 -cp "json-simple-1.1.1.jar;." FluTweets.java
+ *      java -cp "json-simple-1.1.1.jar;." FluTweets
+ * @author aqyang
+ */
 public class FluTweets {
-    // javac --release 8 -cp "json-simple-1.1.1.jar;." FluTweets.java
-    // java -cp "json-simple-1.1.1.jar;." FluTweets
-
+    
     /**
      * Goes through a list of tweets and adds only if they have the word "flu" in them
      * A tweet is considered to contain "flu" if:
@@ -28,7 +38,7 @@ public class FluTweets {
 
         for (Tweet tweet : tweets) {
             // check if there even is a sentence there
-            if (tweet.getText().isEmpty() || tweet.getText() == null) {
+            if (tweet.getText().isEmpty() || tweet.getText() == null || tweet.getText().isBlank()) {
                 continue; 
             }
 
@@ -143,6 +153,8 @@ public class FluTweets {
 
             while (itt.hasNext()){
                 JSONObject jo = (JSONObject) itt.next();
+
+                // try to get and convert information
                 states.add(new State((String) jo.get("name"), (Double) jo.get("latitude"), (Double) jo.get("longitude")));
             }
         } catch (FileNotFoundException fnf) {
@@ -156,6 +168,12 @@ public class FluTweets {
             return;
         } catch (IllegalArgumentException e) {
             System.out.println("Error reading states file");
+            return;
+        }  catch (ClassCastException c) {
+            System.out.println("Error reading states file");
+            return;
+        } catch (NullPointerException e){
+            System.out.println("Error reading tweets file");
             return;
         }
 
@@ -191,6 +209,12 @@ public class FluTweets {
             System.out.println("Error reading tweets file");
             return;
         } catch (IllegalArgumentException e) {
+            System.out.println("Error reading tweets file");
+            return;
+        } catch (ClassCastException c) {
+            System.out.println("Error reading tweets file");
+            return;
+        } catch (NullPointerException e){
             System.out.println("Error reading tweets file");
             return;
         }

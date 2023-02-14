@@ -1,5 +1,6 @@
 /**
- * Object type to store the information of a tweet
+ * Object type to store the information of a Tweet
+ * @author aqyang
  */
 
 public class Tweet {
