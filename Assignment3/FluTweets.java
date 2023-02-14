@@ -7,6 +7,44 @@ import org.json.simple.parser.JSONParser;
 public class FluTweets {
     // javac --release 8 -cp "json-simple-1.1.1.jar;." FluTweets.java
     // java -cp "json-simple-1.1.1.jar;." FluTweets
+
+    /**
+     * Goes through a list of tweets and adds only if they have the word "flu" in them
+     * A tweet is considered to contain "flu" if:
+     *      - contains word "flu" in start, middle, or end
+     *      - contains the hashtag #flu 
+     *      - contains a string that starts with "flu" and followed by a character that is not a letter
+     *        (e.g. "flu!")
+     * @param tweets A list of tweets of the Tweet type
+     * @return a list of Tweet objects that contain "flu" according to the above parameters. 
+     */
+    public static List<Tweet> findFluTweets(List<Tweet> tweets){
+        List<Tweet> fluTweets = new ArrayList<>();
+
+        // returns an empty list if tweets is empty or null
+        if (tweets == null || tweets.isEmpty()) {
+            return fluTweets; 
+        }
+
+        for (Tweet tweet : tweets) {
+            // check if there even is a sentence there
+            if (tweet.getText().isEmpty() || tweet.getText() == null) {
+                continue; 
+            }
+
+            // get and splice the string in one go - should protect from bad code later 
+            String[] text = tweet.getText().split(" ");
+            // System.out.println(text);
+            for (String word : text) {
+                if (word.matches("[fF]lu\\W*") || word.matches("#[fF]lu")) {
+                    fluTweets.add(tweet);
+                    break; 
+                }
+            }
+        }
+
+        return fluTweets;
+    }
     
     public static void main(String[] args) {         
         // get runtime (CL?) arguments 
@@ -118,6 +156,9 @@ public class FluTweets {
             System.out.println("Error reading tweets file");
             return;
         }
+
+        // go through tweets and get all ones with "flu" in them
+        List<Tweet> fluTweets = findFluTweets(tweets);
 
         // TODO: logging tweets
         try {
