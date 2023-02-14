@@ -64,8 +64,10 @@ public class Analyzer {
 		} catch (NullPointerException n) {
 			System.out.println("Bad input file!");
 			return null;
+		} catch (IllegalArgumentException e) {
+			System.out.println("Bad input file!");
+			return null;
 		}
-		// I have no clue if I'm doing the "throw an IllegalArgumentException" part in the above properly
 
 		return sents;
 	}
@@ -89,29 +91,33 @@ public class Analyzer {
 	
 		// get values of words 
 		for (Sentence sent : sentences) {
+
 			// get the string + make all of the letters lowercase
-			String[] line = sent.getText().toLowerCase().split(" ");
+			// ? not sure if this is how you check for empty sentences so - check in later?
+			if (!sent.getText().isEmpty() && sent != null && sent.getText() != null) {
+				String[] line = sent.getText().toLowerCase().split(" ");
 			
-			// add all words in sentence
-			for (String word : line) {
-				// check if word starts with a non letter. proceed if it doesn't
-				if (!String.valueOf(word.charAt(0)).matches("\\W")){
-
-					// check if the word is already in the bank - if so, update value
-					if (ret.containsKey(word)) {
-						double sum = ret.get(word);
-						sum += (double) sent.getScore(); 
-
-						// update values
-						ret.put(word, sum);
-						count.put(word, count.get(word) + 1);
-					} else {
-						// create word 
-						ret.put(word, (double) sent.getScore());
-						count.put(word, 1);
+				// add all words in sentence
+				for (String word : line) {
+					// check if word starts with a non letter. proceed if it doesn't
+					if (!String.valueOf(word.charAt(0)).matches("\\W")){
+	
+						// check if the word is already in the bank - if so, update value
+						if (ret.containsKey(word)) {
+							double sum = ret.get(word);
+							sum += (double) sent.getScore(); 
+	
+							// update values
+							ret.put(word, sum);
+							count.put(word, count.get(word) + 1);
+						} else {
+							// create word 
+							ret.put(word, (double) sent.getScore());
+							count.put(word, 1);
+						}
 					}
 				}
-			}
+			}			
 		}
 		
 		// calculate averages
@@ -148,10 +154,13 @@ public class Analyzer {
 		int count = 0;
 		
 		for (String word : words) {
+			System.out.println(word);
 			if(wordScores.containsKey(word)){
+				// if the word is in the word bank, increase score
 				score += wordScores.get(word);
 				count++;
-			} else if (wordScores.get(word) != null && !String.valueOf(word.charAt(0)).matches("\\W")){
+			} else if (wordScores.get(word) == null && !String.valueOf(word.charAt(0)).matches("\\W")){
+				// if the word is valid but not in the word bank, add score of 0 (which I thought I did but ?)
 				count++;
 			}
 		}
@@ -171,7 +180,7 @@ public class Analyzer {
 	public static void main(String[] args) {
 		// reads file name as an argument - implement later
 		if (args.length < 1) {
-			System.out.println("Please enter a file name!");
+			System.out.println("No input file");
 			return;
 		}
 
