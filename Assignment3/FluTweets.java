@@ -86,49 +86,49 @@ public class FluTweets {
     }
     public static void main(String[] args) {         
         // get runtime (CL?) arguments 
-        // if (args.length < 3) {
-        //     System.out.println("Missing file information!");
-        //     return;
-        // }
+        if (args.length < 3) {
+            System.out.println("Missing file information!");
+            return;
+        }
 
-        String statefn = "states.json"; 
-        String datafn = "test_tweets.json"; 
+        String statefn = ""; 
+        String datafn = ""; 
         String logfn = ""; 
 
         // get the filenames
-        // for (int i = 0; i < args.length; i++){
-        //     if (args[i].contains("-datafile=") && datafn.isEmpty()) {
-        //         String[] splitStr = args[i].split("=");
-        //         // check if filename was include (ie. if empty or not)
-        //         if (splitStr.length < 2) {
-        //             break;
-        //         } else {
-        //             datafn = splitStr[1];
-        //         }
-        //     } else if (args[i].contains("-statesfile=") && statefn.isEmpty()) {
-        //         String[] splitStr = args[i].split("=");
+        for (int i = 0; i < args.length; i++){
+            if (args[i].contains("-datafile=") && datafn.isEmpty()) {
+                String[] splitStr = args[i].split("=");
+                // check if filename was include (ie. if empty or not)
+                if (splitStr.length < 2) {
+                    break;
+                } else {
+                    datafn = splitStr[1];
+                }
+            } else if (args[i].contains("-statesfile=") && statefn.isEmpty()) {
+                String[] splitStr = args[i].split("=");
 
-        //         if (splitStr.length < 2) {
-        //             break;
-        //         } else {
-        //             statefn = splitStr[1];
-        //         }
-        //     } else if (args[i].contains("-logfile=") && logfn.isEmpty()) {
-        //         String[] splitStr = args[i].split("=");
+                if (splitStr.length < 2) {
+                    break;
+                } else {
+                    statefn = splitStr[1];
+                }
+            } else if (args[i].contains("-logfile=") && logfn.isEmpty()) {
+                String[] splitStr = args[i].split("=");
 
-        //         if (splitStr.length < 2) {
-        //             break;
-        //         } else {
-        //             logfn = splitStr[1];
-        //         }
-        //     }
-        // }
+                if (splitStr.length < 2) {
+                    break;
+                } else {
+                    logfn = splitStr[1];
+                }
+            }
+        }
 
         // check if all the filenames have been given. if not, error message and exit
-        // if (datafn.isEmpty() || statefn.isEmpty() || logfn.isEmpty()) {
-        //     System.out.println("One or more files is missing!");
-        //     return;
-        // }
+        if (datafn.isEmpty() || statefn.isEmpty() || logfn.isEmpty()) {
+            System.out.println("Error reading file names!");
+            return;
+        }
 
         JSONParser parser = new JSONParser();
         
@@ -200,18 +200,32 @@ public class FluTweets {
 
         // determine location of all "flu" tweets
         List<FluTweet> tweetLoc = findDistance(fluTweets, states);
-        for (FluTweet tweet : tweetLoc) {
-            System.out.println(tweet.getState() + "\t\t" + tweet.getText());
+
+        // preping logging output
+        Map<String, Integer> logTweets = new HashMap<>();
+        for (State state : states) {
+            logTweets.put(state.getName(), 0);
         }
 
-        // TODO: logging tweets
+        // log tweets
         try {
             BufferedWriter log = new BufferedWriter(new FileWriter(logfn));
-            log.write("test successful!"); // test text
+            // write tweets to file
+            for (FluTweet tweet : tweetLoc) {
+                String state = tweet.getState();
+                log.write(state + "\t\t" + tweet.getText() + "\n");
+                logTweets.put(state, logTweets.get(state) + 1);
+            }
             log.close(); 
-            System.out.println("Check your files");
         } catch (IOException e) {
             System.out.println("Error writing to file");
+        }
+
+        // console output
+        for (Map.Entry<String, Integer> state : logTweets.entrySet()) {
+            if (state.getValue() != 0) {
+                System.out.println(state.getKey() + ": " + state.getValue());
+            } 
         }
     }
 }
