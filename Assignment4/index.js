@@ -36,15 +36,11 @@ app.use('/status', (req, res) => {
 
 	// check if an actual id was submitted or not
 	if (!ids) {
-		// console.log("No ID entered");
 		res.json([]); // send back empty array?
 	} else {
 		// check is an array of ids were submitted or not
 		if (Array.isArray(ids)){
-			// console.log("YES ARRAY");
 			ids.forEach((i) => {
-				// console.log(productstats);
-
 				if (products.get(i)) {
 					// add product + status if in map
 					productstats.push(products.get(i)); 
@@ -55,7 +51,7 @@ app.use('/status', (req, res) => {
 						"status" : "unknown"
 					});
 				}
-				
+
 			})
 		} else {
 			if (products.get(ids)) {
