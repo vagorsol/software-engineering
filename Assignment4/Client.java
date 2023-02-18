@@ -10,6 +10,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.*;
 import java.net.*;
+
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -30,19 +32,24 @@ public class Client {
 	}
 
 
-	/* IMPLEMENT THIS METHOD! */
 	public Set<Product> get(String[] ids) {
-		String request = "http://localhost:3000/status?"; 
+		String request = "http://" + host + ":" + port + "/status?";  // TODO: check if urls work like this
 		Set<Product> products = new HashSet<>(); 
 
-		// check if ids is empty
-		if (ids == null || ids.length == 0) {
+		// check if ids is null: if so, throw an exception
+		if (ids == null) {
+			throw new IllegalArgumentException();
+		}
+
+		// check if ids is empty: if so, return an empty set
+		if (ids.length == 0) {
 			return products;
 		}
 
 		// generate URL
 		for (int i = 0; i < ids.length; i++) {
 			String id = ids[i];
+			// System.out.println(id);
 
 			// check if id is illegal (i.e., null/empty)
 			if (id == null || id.isEmpty()){
@@ -56,11 +63,13 @@ public class Client {
 			if(ids.length > 1 && i < ids.length - 1) {
 				idStat = idStat + "&";
 			}
-
-			request.concat(idStat);
+			// System.out.println(idStat);
+			request = request + idStat;
+			// System.out.println(request);
 		}
 
-		// TODO url stuff
+		System.out.println(request);
+
 		Scanner in = null;
     	
 		try {
@@ -93,21 +102,27 @@ public class Client {
 				    // first, create the parser
 				    JSONParser parser = new JSONParser();
 				    
-				    // then, parse the data and create a JSON object for it
-				    JSONObject data = (JSONObject) parser.parse(line);
+					// TODO: EVERYTHING BELOW HERE IS THINGS TO CHANGE
+				    // parse the data and create a JSON array for it
+				    JSONArray data = (JSONArray) parser.parse(line);
 				    
-				    // read the "message" field from the JSON object
-				    String message = (String)data.get("message");
+					Iterator itt = data.iterator();
 				    
-				    // if using the provided Node Express starter code,
-				    // this should print "It works!"
-				    System.out.println(message);
+					// parse through each object and adds it to the set
+					while (itt.hasNext()){
+						JSONObject val = (JSONObject) itt.next(); 
+
+						// make and add a Product object to the Set
+						String id = (String) val.get("id");
+						String status = (String) val.get("status");
+						products.add(new Product(id, status));
+					}
 				}
 		    }
 	
 		}
 		catch (Exception e) {
-		    e.printStackTrace();
+		    throw new IllegalStateException();
 		}
 		finally {
 			try { in.close(); }
