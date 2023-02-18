@@ -38,7 +38,7 @@ public class FluTweets {
 
         for (Tweet tweet : tweets) {
             // check if there even is a sentence there
-            if (tweet.getText().isEmpty() || tweet.getText() == null || tweet.getText().isBlank()) {
+            if (tweet.getText() == null || tweet.getText().isEmpty()) {
                 continue; 
             }
 
@@ -226,7 +226,7 @@ public class FluTweets {
         List<FluTweet> tweetLoc = findDistance(fluTweets, states);
 
         // preping logging output
-        Map<String, Integer> logTweets = new HashMap<>();
+        Map<String, Integer> logTweets = new TreeMap<>();
         for (State state : states) {
             logTweets.put(state.getName(), 0);
         }
