@@ -31,13 +31,47 @@ app.use('/test', (req, res) => {
 
 // This is the endpoint you need to implement in Part 1 of this assignment
 app.use('/status', (req, res) => {
-	var id = req.query.id; 
-	if (!id || isNaN(id)) {
-		//
+	var ids = req.query.id; 
+	var productstats = [];
+
+	// check if an actual id was submitted or not
+	if (!ids || isNaN(ids)) {
+		console.log("No ID entered");
+		res.json(productstats); // send back empty array?
 	} else {
-		// the actual code here ig
+		// check is an array of ids were submitted or not
+		if (Array.isArray(ids)){
+			console.log("YES ARRAY");
+			ids.forEach((i) => {
+				console.log(productstats);
+
+				if (products.get(i)) {
+					// add product + status if in map
+					productstats.push(products.get(i)); 
+				} else {
+					// if the product isn't in the map, don't add
+					productstats.push({
+						"id" : i,
+						"status" : "discontinued"
+					});
+				}
+				
+			})
+		} else {
+			if (products.get(ids)) {
+				// add product + status if in map
+				productstats.push(products.get(ids)); 
+			} else {
+				// if the product isn't in the map, don't add
+				productstats.push({
+					"id" : ids,
+					"status" : "discontinued"
+				});
+			}
+		}
 	}
-	res.send("Not implemented");
+	// console.log(productstats);
+	res.send(productstats);
 
     });
 
