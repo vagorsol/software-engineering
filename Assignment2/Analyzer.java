@@ -22,6 +22,11 @@ public class Analyzer {
 	public static Set<Sentence> readFile(String filename) {
 		Set<Sentence> sents = new HashSet<>();
 		
+
+		if (filename == null) {
+			throw new IllegalArgumentException();
+
+		}
 		// open and read file
 		try (BufferedReader reader = new BufferedReader(new FileReader(filename))){
 			String line = null;
@@ -56,15 +61,11 @@ public class Analyzer {
 				}				
 			}
 		} catch (FileNotFoundException fnf) {
-			System.out.println("Bad input file!");
-			return null;
+			throw new IllegalArgumentException();
 		} catch (IOException e) {
 			System.out.println("Invalid data!");
 			return null; 
 		} catch (NullPointerException n) {
-			System.out.println("Bad input file!");
-			return null;
-		} catch (IllegalArgumentException e) {
 			System.out.println("Bad input file!");
 			return null;
 		}
@@ -93,8 +94,7 @@ public class Analyzer {
 		for (Sentence sent : sentences) {
 
 			// get the string + make all of the letters lowercase
-			// ? not sure if this is how you check for empty sentences so - check in later?
-			if (!sent.getText().isEmpty() && sent != null && sent.getText() != null) {
+			if (sent != null && sent.getText() != null && !sent.getText().isEmpty()) {
 				String[] line = sent.getText().toLowerCase().split(" ");
 			
 				// add all words in sentence
@@ -185,8 +185,14 @@ public class Analyzer {
 		}
 
 		String filename = args[0]; 
+		Set<Sentence> sents;
 
-		Set<Sentence> sents = readFile(filename);
+		try {
+			sents = readFile(filename);
+		} catch (IllegalArgumentException e) {
+			System.out.println("Bad input file!");
+			return; 
+		}
 		if (sents == null) {
 			return;
 		}
