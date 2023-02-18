@@ -35,15 +35,15 @@ app.use('/status', (req, res) => {
 	var productstats = [];
 
 	// check if an actual id was submitted or not
-	if (!ids || isNaN(ids)) {
-		console.log("No ID entered");
-		res.json(productstats); // send back empty array?
+	if (!ids) {
+		// console.log("No ID entered");
+		res.json([]); // send back empty array?
 	} else {
 		// check is an array of ids were submitted or not
 		if (Array.isArray(ids)){
-			console.log("YES ARRAY");
+			// console.log("YES ARRAY");
 			ids.forEach((i) => {
-				console.log(productstats);
+				// console.log(productstats);
 
 				if (products.get(i)) {
 					// add product + status if in map
@@ -52,7 +52,7 @@ app.use('/status', (req, res) => {
 					// if the product isn't in the map, don't add
 					productstats.push({
 						"id" : i,
-						"status" : "discontinued"
+						"status" : "unknown"
 					});
 				}
 				
@@ -65,14 +65,13 @@ app.use('/status', (req, res) => {
 				// if the product isn't in the map, don't add
 				productstats.push({
 					"id" : ids,
-					"status" : "discontinued"
+					"status" : "unknown"
 				});
 			}
 		}
-	}
-	// console.log(productstats);
-	res.send(productstats);
 
+		res.send(productstats);
+	}
     });
 
 
