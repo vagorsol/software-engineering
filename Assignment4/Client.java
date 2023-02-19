@@ -116,7 +116,12 @@ public class Client {
 						products.add(new Product(id, status));
 
 						// if in cache, update. otherwise, add to cache
-						productCache.put(id, new Product(id, status));
+						if (productCache.containsKey(id)){
+							productCache.replace(id, new Product(id, status));
+						} else {
+							productCache.put(id, new Product(id, status));
+
+						}
 					}
 				}
 		    }
