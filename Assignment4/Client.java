@@ -6,9 +6,8 @@
  * without adding anything else.
  */
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.*;
+import java.io.IOException;
 import java.net.*;
 
 import org.json.simple.JSONArray;
@@ -19,6 +18,7 @@ public class Client {
 	
 	private String host;
 	private int port;
+	private static Map<String, Product> productCache = new HashMap<>();
 	
 	public Client() {
 		// use Node Express defaults
@@ -31,9 +31,10 @@ public class Client {
 		this.port = port;
 	}
 
-
+	// javac --release 8 -cp "json-simple-1.1.1.jar;." ClientTest.java
+	// java -cp "json-simple-1.1.1.jar;." ClientTest
 	public Set<Product> get(String[] ids) {
-		String request = "http://" + host + ":" + port + "/status?";  // TODO: check if urls work like this
+		String request = "http://" + host + ":" + port + "/status?"; 
 		Set<Product> products = new HashSet<>(); 
 
 		// check if ids is null: if so, throw an exception
@@ -68,8 +69,6 @@ public class Client {
 			// System.out.println(request);
 		}
 
-		System.out.println(request);
-
 		Scanner in = null;
     	
 		try {
@@ -102,7 +101,6 @@ public class Client {
 				    // first, create the parser
 				    JSONParser parser = new JSONParser();
 				    
-					// TODO: EVERYTHING BELOW HERE IS THINGS TO CHANGE
 				    // parse the data and create a JSON array for it
 				    JSONArray data = (JSONArray) parser.parse(line);
 				    
@@ -116,10 +114,29 @@ public class Client {
 						String id = (String) val.get("id");
 						String status = (String) val.get("status");
 						products.add(new Product(id, status));
+
+						// if in cache, update. otherwise, add to cache
+						productCache.put(id, new Product(id, status));
 					}
 				}
 		    }
 	
+		}
+		catch (IOException e) {
+			// if cannot connect to server, check the Cache
+
+			for (String id : ids) {
+				// if the id is in cache, get the information from the cache. otherwise, unknown
+				if (!productCache.isEmpty()) {
+					if(productCache.containsKey(id)){
+						products.add(productCache.get(id));
+					} else {
+						products.add(new Product(id, "unknown"));
+					}
+				} else {
+					products.add(new Product(id, "unknown"));
+				}
+			}
 		}
 		catch (Exception e) {
 		    throw new IllegalStateException();
