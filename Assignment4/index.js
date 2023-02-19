@@ -34,7 +34,6 @@ app.use('/status', (req, res) => {
 	var ids = req.query.id; 
 	var productstats = [];
 
-	console.log(ids);
 	// check if an actual id was submitted or not
 	if (!ids) {
 		res.json([]); // send back empty array?
@@ -42,7 +41,6 @@ app.use('/status', (req, res) => {
 		// check is an array of ids were submitted or not
 		if (Array.isArray(ids)){
 			ids.forEach((i) => {
-				console.log(i);
 				if (products.get(i)) {
 					// add product + status if in map
 					productstats.push(products.get(i)); 
