@@ -76,6 +76,21 @@ app.use('/all', (req, res) => {
 
 // IMPLEMENT THIS ENDPOINT!
 app.use('/delete', (req, res) => {
+	var filter = {'name' : req.query.name};
+
+	Person.findOneAndDelete(filter, (err, person) => {
+		if (err){
+			res.type('html').status(200);
+			console.log('uh oh person DNE' + err);
+			res.write(err);
+		} else if (!person) {
+			// I am not sure if this one is an error tbh
+			console.log('Person does not exist?' + err);
+		} else {
+			console.log('Sucessfully deleted!'); 
+		}
+		res.end(); 
+	})
     res.redirect('/all');
 });
 
@@ -122,7 +137,30 @@ app.use('/api', (req, res) => {
     });
 
 
+app.use('/new',(req, res) =>{
+	var thisName = req.query.name;
+	var thisAge = req.query.age;
+	console.log(thisName + " " + thisAge);
+	if (!thisName || !thisAge){
+		res.json({"status":"error"});
+	} else {
+		var newPerson = new Person({
+			name: thisName,
+			age:  thisAge,
+		});
 
+		newPerson.save( (err) => {
+			if (err) {
+				console.log(err);
+				res.json({"status":"error"});
+			}
+			else {
+				// display the "successfull created" message
+				res.json({"status" : "success"});
+			}
+		});
+	}
+});
 
 /*************************************************/
 
