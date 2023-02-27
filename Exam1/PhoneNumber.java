@@ -16,7 +16,7 @@ public class PhoneNumber {
 	
 	@Override
 	public int hashCode() {
-        // added mod so if same sum + different numbers or same mod + different numbers wouldn't equals same (hopefully)
+        // added mod so if same sum + different numbers or vice versa wouldn't equals same (hopefully)
 		return areaCode % 10 + number % 10 + areaCode + number;
 	}
 
