@@ -10,16 +10,14 @@ app.use('/sum', (req, res) => {
 		// check if vals *is* an array
 		if (Array.isArray(vals)) {
 			vals.forEach( (v) => {
-				// console.log(v);
 				if (!isNaN(v)) {
-					sum += v; // how to add without appending?
-					console.log(sum + v);
+					sum += Number(v);
 				}
 			});
 		} else {
 			// if vals is a single entry & is a number
 			if (!isNaN(vals)) {
-				sum = vals;
+				sum += Number(vals);
 			}
 		}
 	}
