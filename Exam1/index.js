@@ -7,11 +7,23 @@ app.use('/sum', (req, res) => {
 	var sum = 0;
  
 	if (vals) {
-		vals.forEach( (v) => {
-			sum += v;
-		});
+		// check if vals *is* an array
+		if (Array.isArray(vals)) {
+			vals.forEach( (v) => {
+				// console.log(v);
+				if (!isNaN(v)) {
+					sum += v; // how to add without appending?
+					console.log(sum + v);
+				}
+			});
+		} else {
+			// if vals is a single entry & is a number
+			if (!isNaN(vals)) {
+				sum = vals;
+			}
+		}
 	}
-	
+
 	res.json( {'sum' : sum} );
  });
  
