@@ -19,8 +19,8 @@ public class Dog {
             if (dog == null) {
                 continue;
             } else {
-                if (dog.isGood == true && dog.name != null) {
-                    ret.add(dog.name); //  && !dog.name.isEmpty() <- unsure if should ignore empty name - ask
+                if (dog.isGood == true && dog.name != null && !dog.name.isEmpty()) {
+                    ret.add(dog.name);
                 }
             }
         }
