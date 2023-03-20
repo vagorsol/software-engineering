@@ -44,7 +44,7 @@ public class NamesManager {
 		// list.add("Todd,");
 		list.add(",Aoward");
 		// list.add(" , a");
-
+		
 		Character c = 'A';
 		
 		int matches = countMatches(c, list);
