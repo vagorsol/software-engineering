@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+// NOTE: I am assuming blank fields, while in practice not meaningful, count as "valid values"
 @SuppressWarnings("deprecation")
 public class FindDistinctTest {
 
@@ -36,17 +37,44 @@ public class FindDistinctTest {
     }
 
     @Test
-    // well null defense is broken so let me fix that...
     public void testNullName() {
         List<Person> list = new LinkedList<>();
         Person p = new Person(null, "birthplace", new Date(2023, 3,31));
+
         list.add(p);
 
         List<Person> ret = Person.findDistinct(list);
+
         assertEquals(0, ret.size(), 0.1);
         assertEquals(new LinkedList<>(), ret);
     }
 
+    @Test
+    public void testNullBirthplace() {
+        List<Person> list = new LinkedList<>();
+        Person p = new Person("name", null, new Date(2023, 3,31));
+
+        list.add(p);
+
+        List<Person> ret = Person.findDistinct(list);
+
+        assertEquals(0, ret.size(), 0.1);
+        assertEquals(new LinkedList<>(), ret);
+    }
+
+    @Test
+    public void testNullDate() {
+        List<Person> list = new LinkedList<>();
+        Person p = new Person("nam", "birthplace", null);
+
+        list.add(p);
+
+        List<Person> ret = Person.findDistinct(list);
+
+        assertEquals(0, ret.size(), 0.1);
+        assertEquals(new LinkedList<>(), ret);
+    }
+    
     @Test
     public void testDuplicateEntry() {
         List<Person> list = new LinkedList<>(); // list to execute function over
