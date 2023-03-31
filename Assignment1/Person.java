@@ -1,3 +1,4 @@
+
 import java.util.Date;
 import java.util.List;
 import java.util.LinkedList;
@@ -55,9 +56,12 @@ public class Person {
 								toAdd = false;
 								break;
 							}
+						} else {
+							toAdd = false;
 						}
 					}
 
+					// checks if should add person to the returned list
 					if(toAdd) {
 						ret.add(person);
 					}
@@ -72,7 +76,7 @@ public class Person {
 		List<Person> list = new LinkedList<>();
 		Person guyA = new Person("Todd Howard", "Florida", new Date(2013, 9, 2));
 		Person guyB = new Person("John Madden", "Ohio", new Date(2017, 8, 5));
-		Person guyC = new Person("silly", "New York", new Date(2017, 8, 5));
+		Person guyC = new Person(null, "New York", new Date(2017, 8, 5));
 
 		list.add(guyA);
 		list.add(guyB);
