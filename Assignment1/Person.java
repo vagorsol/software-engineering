@@ -43,7 +43,9 @@ public class Person {
 
 				// if the list is empty, just add the person 
 				if (ret.isEmpty()){
-					ret.add(person);
+					if(person.getName() != null && person.getBirthplace() != null && person.getBirthdate() != null){
+						ret.add(person);
+					}
 				} else {
 					boolean toAdd = true; 
 
