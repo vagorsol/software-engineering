@@ -1,6 +1,7 @@
 import static org.junit.Assert.*;
 
 import java.sql.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.Test;
@@ -25,9 +26,11 @@ public class FindDistinctTest {
 
     @Test
     public void testNullEntry() {
-        // TODO: how null entry?
         Person p = null;
-        List<Person> ret = Person.findDistinct(List.of(p));
+        List<Person> list = new LinkedList<>();
+        list.add(p);
+        
+        List<Person> ret = Person.findDistinct(list);
 
         // should return an empty list because should ignore null
         assertEquals(0, ret.size(), 0.1);
