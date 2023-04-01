@@ -19,4 +19,25 @@ public class CalculateSentenceScoreTest {
 
         assertEquals(0, score, 0.1);
     }
+
+    @Test
+    public void testEmptyWordScores() {
+        double score = Analyzer.calculateSentenceScore(Map.of(), "ten red dogs");
+
+        assertEquals(0, score, 0.1);
+    }
+
+    @Test
+    public void testEmptySentence() {
+        double score = Analyzer.calculateSentenceScore(Map.of("it", 2.0), "");
+
+        assertEquals(0, score, 0.1);
+    }
+
+    @Test
+    public void testNonLetterWordStart() {
+        double score = Analyzer.calculateSentenceScore(Map.of("smart", 2.0), "?smart");
+
+        assertEquals(0, score, 0.1);
+    }
 }
