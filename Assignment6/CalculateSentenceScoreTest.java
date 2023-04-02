@@ -55,4 +55,11 @@ public class CalculateSentenceScoreTest {
         assertEquals(2, score, 0.1);
     }
 
+    @Test
+    public void testNonLetter() {
+        double score = Analyzer.calculateSentenceScore(Map.of("smart", 2.0), "2");
+
+        assertEquals(0, score, 0.1);
+    }
+
 }
