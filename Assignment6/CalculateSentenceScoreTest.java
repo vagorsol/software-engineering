@@ -40,4 +40,19 @@ public class CalculateSentenceScoreTest {
 
         assertEquals(0, score, 0.1);
     }
+
+    @Test
+    public void testLetterNotInMap() {
+        double score = Analyzer.calculateSentenceScore(Map.of("smart", 2.0), "cat");
+
+        assertEquals(0, score, 0.1);
+    }
+
+    @Test 
+    public void testWordUppercase() {
+        double score = Analyzer.calculateSentenceScore(Map.of("smart", 2.0), "Smart");
+
+        assertEquals(2, score, 0.1);
+    }
+
 }
