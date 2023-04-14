@@ -60,4 +60,10 @@ public class JSONParkingReader implements ParkingReader {
 
         return ret; 
     }
+
+    public static void main(String[] args) {
+        JSONParkingReader js = new JSONParkingReader("parking.json");
+        List<ParkingViolation> lst = js.readParkingData(); 
+        System.out.println(lst.get(0));
+    }
 }
