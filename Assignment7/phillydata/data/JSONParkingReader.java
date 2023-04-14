@@ -43,8 +43,12 @@ public class JSONParkingReader implements ParkingReader {
                 int vehicleID = (int) o.get("plate_id"); // get vehicle ID
                 String state = (String) o.get("state"); // get state
                 int vioID = (int) o.get("ticket_number"); // get violation ID
-                int zipCode = (int) o.get("zip_code"); // TODO: what to do if that entyr DNE?
-
+                int zipCode; // get zipcode, if none then set it to -1
+                if (o.get("zip_code") != null) {
+                    zipCode = (int) o.get("zip_code");
+                } else {
+                    zipCode = -1;
+                }
                 ParkingViolation vioToAdd = new ParkingViolation(timestap, fine, vioDesc, vehicleID, state, vioID, zipCode);
 
                 ret.add(vioToAdd);
