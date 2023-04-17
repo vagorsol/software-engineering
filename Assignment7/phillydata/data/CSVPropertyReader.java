@@ -12,6 +12,7 @@ public class CSVPropertyReader {
         this.filename = filename;
     }
 
+    // TODO: if have time, try to make this not take 500 years
     public List<PropertyValue> readPropertyData() {
         if (filename == null) {
             throw new IllegalStateException("Filename not specified!");
@@ -44,16 +45,22 @@ public class CSVPropertyReader {
                 String[] linesplit = line.split(",");
 
                 // initialize values in case empty: negative means no value (probably no negative values in csv but too difficult to check)
-                double marketVal = -1.0;
-                double livableArea = -1.0;
-                int zipCode = - 1;
+                Double marketVal = null;
+                Double livableArea = null;
+                Integer zipCode = null;
 
                 if (!linesplit[marketValField].isEmpty()) {
                     marketVal =  Double.parseDouble(linesplit[marketValField]);
+                } else {
+                    marketVal = null;
                 }
+
                 if (!linesplit[liveAreaField].isEmpty()){
                     livableArea = Double.parseDouble(linesplit[liveAreaField]);
-                } 
+                } else {
+                    livableArea = null;
+                }
+
                 if (!linesplit[zipField].isEmpty()){
                     String[] zipString = linesplit[zipField].split("-");
                     String[] zipStringSpace = zipString[0].split(" ");
@@ -63,6 +70,8 @@ public class CSVPropertyReader {
                             zipCode = Integer.parseInt(zipStringRegEx[0]);
                         }
                     }
+                } else {
+                    zipCode = null;
                 }
 
                 PropertyValue vioToAdd = new PropertyValue(marketVal, livableArea, zipCode);
@@ -83,6 +92,6 @@ public class CSVPropertyReader {
         // verifying data
         System.out.println("Market Value: " + pv.getMarketValue()); 
         System.out.println("Total Livable Area: " + pv.getTotalLivableArea());
-        System.out.println("" + pv.getZip());
+        System.out.println("Zip Code: " + pv.getZip());
     }
 }

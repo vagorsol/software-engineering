@@ -38,21 +38,21 @@ public class JSONParkingReader implements ParkingReader {
                 Date timestap = new Date(
                     Integer.parseInt(timeDate[0]), Integer.parseInt(timeDate[1]), Integer.parseInt(timeDate[2]), 
                     Integer.parseInt(timeTime[0]), Integer.parseInt(timeTime[1]), Integer.parseInt(timeTime[2].substring(0, 2)));
-                int fine = ((Long) (o.get("fine"))).intValue(); // get fine
+                Integer fine = ((Long) (o.get("fine"))).intValue(); // get fine
                 String vioDesc = (String) o.get("violation"); // get violation description
-                int vehicleID = Integer.parseInt((String) o.get("plate_id")); // get vehicle ID
+                Integer vehicleID = Integer.parseInt((String) o.get("plate_id")); // get vehicle ID
                 String state = (String) o.get("state"); // get state
-                int vioID = ((Long) o.get("ticket_number")).intValue(); // get violation ID
-                int zipCode; // get zipcode, if none then set it to -1
+                Integer vioID = ((Long) o.get("ticket_number")).intValue(); // get violation ID
+                Integer zipCode; // get zipcode, if none then set it to -1
                 if (o.get("zip_code") != null) {
                     String zipString = (String) o.get("zip_code");
                     if (zipString.isEmpty()) {
-                        zipCode = -1;
+                        zipCode = null;
                     } else {
                         zipCode = Integer.parseInt(zipString);
                     }
                 } else {
-                    zipCode = -1;
+                    zipCode = null;
                 }
                 ParkingViolation vioToAdd = new ParkingViolation(timestap, fine, vioDesc, vehicleID, state, vioID, zipCode);
 

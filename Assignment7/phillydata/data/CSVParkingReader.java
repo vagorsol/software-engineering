@@ -32,14 +32,14 @@ public class CSVParkingReader implements ParkingReader {
                 Date timestap = new Date(
                     Integer.parseInt(timeDate[0]), Integer.parseInt(timeDate[1]), Integer.parseInt(timeDate[2]), 
                     Integer.parseInt(timeTime[0]), Integer.parseInt(timeTime[1]), Integer.parseInt(timeTime[2].substring(0, 2)));
-                int fine = Integer.parseInt(linesplit[1]); // get fine
+                Integer fine = Integer.parseInt(linesplit[1]); // get fine
                 String vioDesc = linesplit[2]; // get violation description
-                int vehicleID = Integer.parseInt(linesplit[3]); // get vehicle ID
+                Integer vehicleID = Integer.parseInt(linesplit[3]); // get vehicle ID
                 String state = linesplit[4]; // get state
-                int vioID = Integer.parseInt(linesplit[5]); // get violation ID
-                int zipCode; 
+                Integer vioID = Integer.parseInt(linesplit[5]); // get violation ID
+                Integer zipCode; 
                 if (linesplit.length <= 6) {
-                    zipCode = -1; // if there is no zipe code, set it to a negative value (which is abt the same as setting it as null here)
+                    zipCode = null; // if there is no zipe code, set it to a negative value (which is abt the same as setting it as null here)
                 } else {
                     zipCode = Integer.parseInt(linesplit[6]);
                 }
