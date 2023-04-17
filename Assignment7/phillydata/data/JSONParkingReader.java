@@ -37,15 +37,20 @@ public class JSONParkingReader implements ParkingReader {
                 String[] timeTime = timeSplit[1].split(":"); // get hour/min/sec
                 Date timestap = new Date(
                     Integer.parseInt(timeDate[0]), Integer.parseInt(timeDate[1]), Integer.parseInt(timeDate[2]), 
-                    Integer.parseInt(timeTime[0]), Integer.parseInt(timeTime[1]), Integer.parseInt(timeTime[2]));
-                int fine = (int) o.get("fine"); // get fine
+                    Integer.parseInt(timeTime[0]), Integer.parseInt(timeTime[1]), Integer.parseInt(timeTime[2].substring(0, 2)));
+                int fine = ((Long) (o.get("fine"))).intValue(); // get fine
                 String vioDesc = (String) o.get("violation"); // get violation description
-                int vehicleID = (int) o.get("plate_id"); // get vehicle ID
+                int vehicleID = Integer.parseInt((String) o.get("plate_id")); // get vehicle ID
                 String state = (String) o.get("state"); // get state
-                int vioID = (int) o.get("ticket_number"); // get violation ID
+                int vioID = ((Long) o.get("ticket_number")).intValue(); // get violation ID
                 int zipCode; // get zipcode, if none then set it to -1
                 if (o.get("zip_code") != null) {
-                    zipCode = (int) o.get("zip_code");
+                    String zipString = (String) o.get("zip_code");
+                    if (zipString.isEmpty()) {
+                        zipCode = -1;
+                    } else {
+                        zipCode = Integer.parseInt(zipString);
+                    }
                 } else {
                     zipCode = -1;
                 }
@@ -61,9 +66,19 @@ public class JSONParkingReader implements ParkingReader {
         return ret; 
     }
 
+    // testing
     public static void main(String[] args) {
         JSONParkingReader js = new JSONParkingReader("parking.json");
         List<ParkingViolation> lst = js.readParkingData(); 
-        System.out.println(lst.get(0));
+        ParkingViolation p = lst.get(0);
+
+        // verifying data
+        System.out.println("Timestap: " + p.getTimeStamp()); // 2013 04 03 / 15:15:00
+        System.out.println("Fine: " + p.getFine()); // 36
+        System.out.println("Violation Description: " + p.getViolationDesc()); // meter expired CC
+        System.out.println("Vehicle ID: " + p.getVehicleID()); // 1322731
+        System.out.println("State: " + p.getState()); // PA
+        System.out.println("Violation ID: " + p.getViolationID()); // 2905928
+        System.out.println("Vehicle ID: " + p.getZip()); // 19104
     }
 }
