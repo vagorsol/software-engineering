@@ -31,7 +31,7 @@ public class CSVPropertyReader {
                 for(int i = 0; i < linesplit.length; i++) {
                     if (linesplit[i].equals("market_value")) {
                         marketValField = i;
-                    } else if (linesplit[i].equals("total_liveable_area")) {
+                    } else if (linesplit[i].equals("total_livable_area")) {
                         liveAreaField = i;
                     } else if (linesplit[i].equals("zip_code")) {
                         zipField = i;
@@ -43,19 +43,46 @@ public class CSVPropertyReader {
                 String line = in.nextLine();
                 String[] linesplit = line.split(",");
 
-                double marketVal = Double.parseDouble(linesplit[marketValField]);
-                double livableArea = Double.parseDouble(linesplit[liveAreaField]);
-                int zipCode = Integer.parseInt(linesplit[zipField]);
+                // initialize values in case empty: negative means no value (probably no negative values in csv but too difficult to check)
+                double marketVal = -1.0;
+                double livableArea = -1.0;
+                int zipCode = - 1;
+
+                if (!linesplit[marketValField].isEmpty()) {
+                    marketVal =  Double.parseDouble(linesplit[marketValField]);
+                }
+                if (!linesplit[liveAreaField].isEmpty()){
+                    livableArea = Double.parseDouble(linesplit[liveAreaField]);
+                } 
+                if (!linesplit[zipField].isEmpty()){
+                    String[] zipString = linesplit[zipField].split("-");
+                    String[] zipStringSpace = zipString[0].split(" ");
+                    for (String zss:zipStringSpace) {
+                        if (!zss.isEmpty()) {
+                            String[] zipStringRegEx = zss.split("[a-zA-Z]+");
+                            zipCode = Integer.parseInt(zipStringRegEx[0]);
+                        }
+                    }
+                }
 
                 PropertyValue vioToAdd = new PropertyValue(marketVal, livableArea, zipCode);
-
                 ret.add(vioToAdd);
-
             }
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
         
         return ret; 
+    }
+
+    public static void main(String[] args) {
+        CSVPropertyReader pr = new CSVPropertyReader("properties.csv");
+        List<PropertyValue> lst = pr.readPropertyData();
+        PropertyValue pv = lst.get(0);
+
+        // verifying data
+        System.out.println("Market Value: " + pv.getMarketValue()); 
+        System.out.println("Total Livable Area: " + pv.getTotalLivableArea());
+        System.out.println("" + pv.getZip());
     }
 }
