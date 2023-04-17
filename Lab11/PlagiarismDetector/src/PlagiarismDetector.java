@@ -27,21 +27,40 @@ public class PlagiarismDetector {
 		if (files == null) throw new IllegalArgumentException();
 		
 		Map<String, Integer> numberOfMatches = new HashMap<String, Integer>();
-		
+		Map<String, Set<String>> memoize = new HashMap<>();
+
 		/****** ISSUE #1 IS WITHIN THESE NEXT FEW LINES OF CODE! *******/
 		// compare each file to all other files
 		for (int i = 0; i < files.length; i++) {
 			String file1 = files[i];
+			// create phrases for file 1
+			Set<String> file1Phrases;
+			file1Phrases = memoize.get(file1);
+			if (file1Phrases == null){
+				file1Phrases = createPhrases(dirName + "/" + file1, windowSize);
+				if(file1Phrases == null) {
+					return null;
+				}
 
-			for (int j = 0; j < files.length; j++) { 
+				memoize.put(file1, file1Phrases);
+			}
+
+			// technically it would say that a given file is plagarizing itself
+			// however i am only asked to look at execution time so i will not address that 
+			for (int j = 0 + i; j < files.length; j++) { 
 				String file2 = files[j];
 
-				// create phrases for each file
-				Set<String> file1Phrases = createPhrases(dirName + "/" + file1, windowSize); 
-				Set<String> file2Phrases = createPhrases(dirName + "/" + file2, windowSize); 
-				
-				if (file1Phrases == null || file2Phrases == null)
-					return null;
+				// create phrases for file 2
+				Set<String> file2Phrases;
+				file2Phrases = memoize.get(file2);
+				if (file2Phrases == null){
+					file2Phrases = createPhrases(dirName + "/" + file2, windowSize);
+					if(file2Phrases == null) {
+						return null;
+					}
+
+					memoize.put(file2, file2Phrases);
+				}
 				
 				// find matching phrases in each Set
 				Set<String> matches = findMatches(file1Phrases, file2Phrases);
@@ -74,8 +93,8 @@ public class PlagiarismDetector {
 		
 		List<String> words = new ArrayList<String>();
 		
-		try {
-			BufferedReader in = new BufferedReader(new FileReader(filename));
+		// fixed resource leak
+		try (BufferedReader in = new BufferedReader(new FileReader(filename))){
 			String line;
 			while ((line = in.readLine())  != null) {
 				String[] tokens = line.split(" ");
@@ -136,10 +155,8 @@ public class PlagiarismDetector {
 		
 			/****** ISSUE #3 IS WITHIN THESE NEXT FEW LINES OF CODE! *******/
 			for (String mine : myPhrases) {
-				for (String yours : yourPhrases) {
-					if (mine.equalsIgnoreCase(yours)) {
-						matches.add(mine);
-					}
+				if (yourPhrases.contains(mine)) {
+					matches.add(mine);
 				}
 			}
 		}
