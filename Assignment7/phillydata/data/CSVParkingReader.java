@@ -13,12 +13,12 @@ public class CSVParkingReader implements ParkingReader {
     }
 
     @SuppressWarnings("deprecation")
-    public List<ParkingViolation> readParkingData() {
+    public Map<Integer, List<ParkingViolation>> readParkingData() {
         if (filename == null) {
             throw new IllegalStateException("Filename not specified!");
         } 
         
-        List<ParkingViolation> ret = new LinkedList<>();
+        Map<Integer, List<ParkingViolation>> ret = new TreeMap<>();
 
         try (Scanner in = new Scanner(new File(filename))) {
             while (in.hasNext()) {
@@ -45,8 +45,16 @@ public class CSVParkingReader implements ParkingReader {
                 }
 
                 ParkingViolation vioToAdd = new ParkingViolation(timestap, fine, vioDesc, vehicleID, state, vioID, zipCode);
-
-                ret.add(vioToAdd);
+                if (ret.containsKey(vehicleID)){
+                    List<ParkingViolation> lst = ret.get(vehicleID);
+                    lst.add(vioToAdd);
+                    ret.put(vehicleID, lst);
+                } else {
+                    List<ParkingViolation> lst = new ArrayList<>();
+                    lst.add(vioToAdd);
+                    ret.put(vehicleID, lst);
+                }
+                
 
             }
         } catch (Exception e) {
@@ -58,17 +66,18 @@ public class CSVParkingReader implements ParkingReader {
 
     public static void main(String[] args){
         CSVParkingReader js = new CSVParkingReader("parking.csv");
-        List<ParkingViolation> lst = js.readParkingData(); 
-        ParkingViolation p = lst.get(0);
+        Map<Integer, List<ParkingViolation>> lst = js.readParkingData(); 
+        List<ParkingViolation> plst = lst.get(1322731);
 
         // verifying data
-        System.out.println("Timestap: " + p.getTimeStamp()); // 2013 04 03 / 15:15:00
-        System.out.println("Fine: " + p.getFine()); // 36
-        System.out.println("Violation Description: " + p.getViolationDesc()); // meter expired CC
-        System.out.println("Vehicle ID: " + p.getVehicleID()); // 1322731
-        System.out.println("State: " + p.getState()); // PA
-        System.out.println("Violation ID: " + p.getViolationID()); // 2905928
-        System.out.println("Vehicle ID: " + p.getZip()); // 19104
+        for (ParkingViolation p : plst){
+            System.out.println("Timestap: " + p.getTimeStamp()); // 2013 04 03 / 15:15:00
+            System.out.println("Fine: " + p.getFine()); // 36
+            System.out.println("Violation Description: " + p.getViolationDesc()); // meter expired CC
+            System.out.println("Vehicle ID: " + p.getVehicleID()); // 1322731
+            System.out.println("State: " + p.getState()); // PA
+            System.out.println("Violation ID: " + p.getViolationID()); // 2905928
+            System.out.println("Vehicle ID: " + p.getZip()); // 19104
+        }
     }
-
 }

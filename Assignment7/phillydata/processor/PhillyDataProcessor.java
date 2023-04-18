@@ -2,6 +2,7 @@ package phillydata.processor;
 
 import java.io.IOError;
 import java.util.List;
+import java.util.Map;
 
 import phillydata.common.*;
 import phillydata.data.*;
@@ -11,7 +12,7 @@ public class PhillyDataProcessor {
     protected PropertyReader propertyReader;
     protected PopulationReader populationReader;
 
-    protected List<ParkingViolation> parkingViolations;
+    protected Map<Integer, List<ParkingViolation>> parkingViolations;
     protected List<PropertyValue> propertyValue;
     protected List<Population> population;
 
@@ -45,6 +46,20 @@ public class PhillyDataProcessor {
         }
 
         return sum;
+    }
+
+    /**
+     * Given a ZIP code, returns corresponding population in the population input file
+     * @param zip
+     * @return population iff that zip code exists in the population input file, else returns 0
+     */
+    public int getPopByZip(int zip) {
+        for(Population p : population) {
+            if (p.getZip() == zip){
+                return p.getPopulation();
+            }
+        }
+        return 0;
     }
 
     
