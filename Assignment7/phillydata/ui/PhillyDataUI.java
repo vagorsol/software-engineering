@@ -2,10 +2,14 @@ package phillydata.ui;
 
 import java.util.Scanner;
 
+import phillydata.processor.PhillyDataProcessor;
+
 public class PhillyDataUI {
+    protected PhillyDataProcessor processor;
     protected Scanner in; 
     
-    public PhillyDataUI() {
+    public PhillyDataUI(PhillyDataProcessor processor) {
+        this.processor = processor;
         in = new Scanner(System.in);
     }
     // function to make main look *SLIGHTLY* nicer. literally just prints out a menu
