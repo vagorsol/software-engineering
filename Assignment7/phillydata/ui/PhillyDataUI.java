@@ -1,6 +1,6 @@
 package phillydata.ui;
 
-import java.util.Scanner;
+import java.util.*;
 
 import phillydata.processor.PhillyDataProcessor;
 
@@ -44,7 +44,7 @@ public class PhillyDataUI {
                     doTotalPopZIP();
                     break;
                 case 2:
-                    System.out.println("Fines Per Capita");
+                    doFinesPerCapita();;
                     break;
                 case 3:
                     System.out.println("Average Residential Market Value");
@@ -70,10 +70,16 @@ public class PhillyDataUI {
         System.out.println("The Total Population for all ZIP codes is: " + sum + "\n");
     }
 
-
-
-    public static void main(String args[]) {
-
+    /**
+     * For each ZIP code, give the aggregate fines
+     */
+    public void doFinesPerCapita() {
+        Map<Integer, Double> ret = processor.getFinesPerCapita();
+        
+        for(Map.Entry<Integer, Double> p : ret.entrySet()) {
+            System.out.printf("%s \t %.4f\n", p.getKey(), p.getValue());
+            // System.out.println(p.getKey() + " " + p.getValue());
+        }
     }
 }
 

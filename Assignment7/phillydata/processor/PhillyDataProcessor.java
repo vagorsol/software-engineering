@@ -1,8 +1,7 @@
 package phillydata.processor;
 
 import java.io.IOError;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import phillydata.common.*;
 import phillydata.data.*;
@@ -52,8 +51,9 @@ public class PhillyDataProcessor {
      * Given a ZIP code, returns corresponding population in the population input file
      * @param zip
      * @return population iff that zip code exists in the population input file, else returns 0
+     * ? might change privacy level later
      */
-    public int getPopByZip(int zip) {
+    protected int getPopByZip(int zip) {
         for(Population p : population) {
             if (p.getZip() == zip){
                 return p.getPopulation();
@@ -62,5 +62,48 @@ public class PhillyDataProcessor {
         return 0;
     }
 
-    
+    /**
+     * For each zip code, get the average fines divided by the population of that zipcode
+     * @return ret, zipcode with associated average amount of fines
+     */
+    public Map<Integer, Double> getFinesPerCapita() {
+        // return set
+        Map<Integer, Double> ret = new TreeMap<>();
+
+        // get all ZipCodes
+        Map<Integer, Integer> zips = new HashMap<>();
+        
+        for(Population p : population){
+            ret.put(p.getZip(), 0.0);
+            zips.put(p.getZip(), 0);
+        }
+
+        // add all fines to the map
+        for(Map.Entry<Integer, List<ParkingViolation>> parkingVio : parkingViolations.entrySet()) {
+            List<ParkingViolation> pvlst = parkingVio.getValue(); 
+            for (ParkingViolation pv : pvlst) {
+                Integer zipCode = pv.getZip();
+                if(zipCode != null && zips.containsKey(zipCode)) {
+                    Integer val = zips.get(zipCode);
+                    val = val +  pv.getFine();
+                    // System.out.println(zipCode + " " + pv.getFine() + " " + val);
+                    zips.put(zipCode, val);
+                }
+            }
+        }
+
+        // calculate the average of all the fines
+        // Fun Fact! technically Math.round sometimes truncates! however, writing my own rounder hurt my head so Sure
+        for(Map.Entry<Integer, Integer> z : zips.entrySet()) {
+            Integer val = z.getValue(); // total fines
+            Integer pop = getPopByZip(z.getKey()); // population at zipcode
+            
+            Double avg = ((double) val / (double) pop); 
+            avg = ((double) Math.round(avg * 10000)) / 10000; 
+            // System.out.println("Calculating Average: " + z.getKey() + " " + avg);
+            ret.put(z.getKey(), avg);
+        }
+
+        return ret; 
+    }
 }
