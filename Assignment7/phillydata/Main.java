@@ -1,11 +1,8 @@
 package phillydata;
 
-import phillydata.common.*;
 import phillydata.data.*;
 import phillydata.processor.PhillyDataProcessor;
 import phillydata.ui.PhillyDataUI;
-
-import java.util.List;
 
 
 public class Main {

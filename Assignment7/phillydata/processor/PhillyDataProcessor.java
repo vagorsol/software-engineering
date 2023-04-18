@@ -26,11 +26,26 @@ public class PhillyDataProcessor {
             population = populationReader.readPopulationData();
         } catch (IllegalStateException e) {
             System.out.println("Error reading the file!");
-            return; 
+            System.exit(1); 
         } catch (IOError | SecurityException e) {
             System.out.println("Cannot open file for reading!");
-            return;
+            System.exit(1);;
         }
-        // TODO: how the catch error cases are going to work...
     }
+
+    /**
+     * Returns the total population for all of the ZIP Codes in the population input file
+     * @return sum
+     */
+    public int getTotalPop() {
+        int sum = 0;
+
+        for(Population p : population) {
+            sum += p.getPopulation();
+        }
+
+        return sum;
+    }
+
+    
 }

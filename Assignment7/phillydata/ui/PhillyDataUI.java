@@ -12,6 +12,7 @@ public class PhillyDataUI {
         this.processor = processor;
         in = new Scanner(System.in);
     }
+
     // function to make main look *SLIGHTLY* nicer. literally just prints out a menu
     private static void menu() {
         System.out.println("Menu");
@@ -31,6 +32,7 @@ public class PhillyDataUI {
         while (looping) {
             menu();
             userInput = Integer.parseInt(in.nextLine());
+            System.out.println(); // output readability
 
             // todo:set them to prrocessors (or something)
             switch (userInput) {
@@ -39,7 +41,7 @@ public class PhillyDataUI {
                     looping = false; 
                     break; 
                 case 1:
-                    System.out.println("Total Population for All ZIP Codes");
+                    doTotalPopZIP();
                     break;
                 case 2:
                     System.out.println("Fines Per Capita");
@@ -58,6 +60,20 @@ public class PhillyDataUI {
                     break;
             }
         }
+    }
+
+    /**
+     * Menu Option #1: displays the total population of all the ZIP codes in population input file
+     */
+    public void doTotalPopZIP() {
+        int sum = processor.getTotalPop();
+        System.out.println("The Total Population for all ZIP codes is: " + sum + "\n");
+    }
+
+
+
+    public static void main(String args[]) {
+
     }
 }
 
