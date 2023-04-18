@@ -45,18 +45,18 @@ public class PropertyReader {
                 String[] linesplit = line.split(",");
 
                 // initialize values in case empty: negative means no value (probably no negative values in csv but too difficult to check)
-                Double marketVal = null;
-                Double livableArea = null;
+                String marketVal = null;
+                String livableArea = null;
                 Integer zipCode = null;
 
                 if (!linesplit[marketValField].isEmpty()) {
-                    marketVal =  Double.parseDouble(linesplit[marketValField]);
+                    marketVal =  linesplit[marketValField];
                 } else {
                     marketVal = null;
                 }
 
                 if (!linesplit[liveAreaField].isEmpty()){
-                    livableArea = Double.parseDouble(linesplit[liveAreaField]);
+                    livableArea = linesplit[liveAreaField];
                 } else {
                     livableArea = null;
                 }

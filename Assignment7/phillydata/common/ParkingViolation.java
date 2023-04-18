@@ -4,14 +4,14 @@ import java.util.Date;
 
 public class ParkingViolation {
     private Date timestap;
-    private Integer fine; 
+    private String fine; 
     private String vioDesc; 
-    private Integer vehicleID;
+    private String vehicleID;
     private String state; 
-    private Integer vioID;
+    private String vioID;
     private Integer zipCode;
 
-    public ParkingViolation(Date timestap, Integer fine, String vioDesc, Integer vehicleID, String state, Integer vioID, Integer zipCode) {
+    public ParkingViolation(Date timestap, String fine, String vioDesc, String vehicleID, String state, String vioID, Integer zipCode) {
         this.timestap = timestap;
         this.fine = fine; 
         this.vioDesc = vioDesc; 
@@ -26,7 +26,11 @@ public class ParkingViolation {
     }
 
     public Integer getFine() {
-        return fine;
+        try {
+            return Integer.parseInt(fine);
+        } catch (NumberFormatException | NullPointerException e) {
+            return null; 
+        }
     }
 
     public String getViolationDesc() {
@@ -34,7 +38,11 @@ public class ParkingViolation {
     }
     
     public Integer getVehicleID() {
-        return vehicleID;
+        try {
+            return Integer.parseInt(vehicleID);
+        } catch (NumberFormatException | NullPointerException e) {
+            return null; 
+        }
     }
 
     public String getState() {
@@ -42,7 +50,11 @@ public class ParkingViolation {
     }
 
     public Integer getViolationID() {
-        return vioID;
+        try {
+            return Integer.parseInt(vioID);
+        } catch (NumberFormatException | NullPointerException e) {
+            return null; 
+        }
     }
 
     public Integer getZip() {

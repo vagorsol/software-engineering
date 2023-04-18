@@ -26,8 +26,12 @@ public class PopulationReader {
 
             while ((line = reader.readLine()) != null) {
                 String[] fmtLine = line.split(" ");
-                Population popToAdd = new Population(Integer.parseInt(fmtLine[0]), Integer.parseInt(fmtLine[1]));
-                ret.add(popToAdd);
+                try {
+                    Population popToAdd = new Population(Integer.parseInt(fmtLine[0]), Integer.parseInt(fmtLine[1]));
+                    ret.add(popToAdd);
+                } catch(NumberFormatException | NullPointerException e) {
+                    continue; 
+                }
             }
         } catch (Exception e) {
             throw new IllegalStateException(e);

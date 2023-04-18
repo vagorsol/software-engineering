@@ -11,7 +11,7 @@ public class PhillyDataProcessor {
     protected PropertyReader propertyReader;
     protected PopulationReader populationReader;
 
-    protected Map<Integer, List<ParkingViolation>> parkingViolations;
+    protected Map<String, List<ParkingViolation>> parkingViolations;
     protected List<PropertyValue> propertyValue;
     protected List<Population> population;
 
@@ -64,11 +64,11 @@ public class PhillyDataProcessor {
         }
 
         // add all fines to the map
-        for(Map.Entry<Integer, List<ParkingViolation>> parkingVio : parkingViolations.entrySet()) {
+        for(Map.Entry<String, List<ParkingViolation>> parkingVio : parkingViolations.entrySet()) {
             List<ParkingViolation> pvlst = parkingVio.getValue(); 
             for (ParkingViolation pv : pvlst) {
                 Integer zipCode = pv.getZip();
-                if(zipCode != null && zips.containsKey(zipCode)) {
+                if(zipCode != null && zips.containsKey(zipCode) && pv.getFine() != null) {
                     Integer val = zips.get(zipCode);
                     val = val +  pv.getFine();
                     // System.out.println(zipCode + " " + pv.getFine() + " " + val);
@@ -91,6 +91,12 @@ public class PhillyDataProcessor {
         return ret; 
     }
 
+    /** 
+     * Gets the residential average of [specificed field value]
+     * @param zip, zip code to call the averager on
+     * @param averager, specifices what the [specified field value] is
+     * @return avg, the average
+     */
     public int getResidentialAverage(int zip, ResidentialAverager averager) {
         int houses = 0;
 
@@ -127,7 +133,7 @@ public class PhillyDataProcessor {
         double sum = 0.0; 
 
         for (PropertyValue p : propertyValue) {
-            if (p.getZip() == zip) {
+            if (p.getZip() == zip && p.getMarketValue() != null) {
                 sum += p.getMarketValue();
             }
         }

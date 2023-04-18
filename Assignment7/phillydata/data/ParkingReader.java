@@ -6,5 +6,5 @@ import java.util.Map;
 import phillydata.common.ParkingViolation;
 
 public interface ParkingReader {
-    public Map<Integer, List<ParkingViolation>> readParkingData(); 
+    public Map<String, List<ParkingViolation>> readParkingData(); 
 }

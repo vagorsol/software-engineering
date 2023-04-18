@@ -8,7 +8,9 @@ public class MarketValueAvg implements ResidentialAverager {
     public int avgResidential(int houses, List<PropertyValue> pv) { 
         double sum = 0.0;
         for (PropertyValue p : pv) {
-            sum += p.getMarketValue();
+            if (p.getMarketValue() != null) {
+                sum += p.getMarketValue();
+            }
         }
         double avg = sum / houses;
         return (int) ((double) Math.round(avg * 10000)) / 10000;

@@ -1,22 +1,30 @@
 package phillydata.common;
 
 public class PropertyValue {
-    private Double marketValue;
-    private Double totalLivableArea; 
+    private String marketValue;
+    private String totalLivableArea; 
     private Integer zipCode; 
 
-    public PropertyValue(Double marketValue, Double totalLivableArea, Integer zipCode) {
+    public PropertyValue(String marketValue, String totalLivableArea, Integer zipCode) {
         this.marketValue = marketValue;
         this.totalLivableArea = totalLivableArea;
         this.zipCode = zipCode; 
     }
 
     public Double getMarketValue() {
-        return marketValue;
+        try {
+            return Double.parseDouble(marketValue);
+        } catch (NumberFormatException | NullPointerException e) {
+            return null; 
+        }
     } 
 
     public Double getTotalLivableArea() {
-        return totalLivableArea;
+        try {
+            return Double.parseDouble(totalLivableArea);
+        } catch (NumberFormatException | NullPointerException e) {
+            return null; 
+        }
     }
 
     public Integer getZip() {

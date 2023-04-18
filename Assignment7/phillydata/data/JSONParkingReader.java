@@ -17,12 +17,12 @@ public class JSONParkingReader implements ParkingReader {
     }
 
     @SuppressWarnings({"deprecation", "unchecked"})
-    public Map<Integer, List<ParkingViolation>> readParkingData() {
+    public Map<String, List<ParkingViolation>> readParkingData() {
         if (filename == null) {
             throw new IllegalThreadStateException("Filename not specificed!");
         }
 
-        Map<Integer, List<ParkingViolation>> ret = new TreeMap<>(); 
+        Map<String, List<ParkingViolation>> ret = new TreeMap<>(); 
 
         try {
             Object obj = new JSONParser().parse(new FileReader(filename));
@@ -38,11 +38,11 @@ public class JSONParkingReader implements ParkingReader {
                 Date timestap = new Date(
                     Integer.parseInt(timeDate[0]), Integer.parseInt(timeDate[1]), Integer.parseInt(timeDate[2]), 
                     Integer.parseInt(timeTime[0]), Integer.parseInt(timeTime[1]), Integer.parseInt(timeTime[2].substring(0, 2)));
-                Integer fine = ((Long) (o.get("fine"))).intValue(); // get fine
+                String fine = Long.toString((Long) o.get("fine")); // get fine
                 String vioDesc = (String) o.get("violation"); // get violation description
-                Integer vehicleID = Integer.parseInt((String) o.get("plate_id")); // get vehicle ID
+                String vehicleID = (String) o.get("plate_id"); // get vehicle ID
                 String state = (String) o.get("state"); // get state
-                Integer vioID = ((Long) o.get("ticket_number")).intValue(); // get violation ID
+                String vioID = Long.toString((Long) o.get("ticket_number")); // get violation ID
                 Integer zipCode; // get zipcode, if none then set it to -1
                 if (o.get("zip_code") != null) {
                     String zipString = (String) o.get("zip_code");
@@ -77,8 +77,8 @@ public class JSONParkingReader implements ParkingReader {
     // testing
     public static void main(String[] args) {
         JSONParkingReader js = new JSONParkingReader("parking.json");
-        Map<Integer, List<ParkingViolation>> lst = js.readParkingData(); 
-        List<ParkingViolation> plst = lst.get(1322731);
+        Map<String, List<ParkingViolation>> lst = js.readParkingData(); 
+        List<ParkingViolation> plst = lst.get("1322731");
 
         // verifying data
         for (ParkingViolation p : plst){
