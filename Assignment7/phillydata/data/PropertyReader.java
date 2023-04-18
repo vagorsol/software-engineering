@@ -5,10 +5,10 @@ import java.util.*;
 
 import phillydata.common.PropertyValue;
 
-public class CSVPropertyReader {
+public class PropertyReader {
     private String filename;
 
-    public CSVPropertyReader(String filename) {
+    public PropertyReader(String filename) {
         this.filename = filename;
     }
 
@@ -85,7 +85,7 @@ public class CSVPropertyReader {
     }
 
     public static void main(String[] args) {
-        CSVPropertyReader pr = new CSVPropertyReader("properties.csv");
+        PropertyReader pr = new PropertyReader("properties.csv");
         List<PropertyValue> lst = pr.readPropertyData();
         PropertyValue pv = lst.get(0);
 
