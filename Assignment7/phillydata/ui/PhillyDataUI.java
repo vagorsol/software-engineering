@@ -31,7 +31,15 @@ public class PhillyDataUI {
 
         while (looping) {
             menu();
-            userInput = Integer.parseInt(in.nextLine());
+
+            // checks if is a number
+            try {
+                userInput = Integer.parseInt(in.nextLine());
+            } catch(NumberFormatException | NullPointerException e) {
+                System.out.println("Invalid Option! Please select one of the listed options! \n");
+                continue;
+            }
+            
             System.out.println(); // output readability
 
             // todo:set them to prrocessors (or something)
@@ -53,7 +61,7 @@ public class PhillyDataUI {
                     System.out.println("Average Residential Total Liveable Area");
                     break;
                 case 5:
-                    System.out.println("Residential Market Value Per Capita");
+                    doMarketValPerCapitca();
                     break;
                 default:
                     System.out.println("Invalid Option! Please select one of the listed options!");
@@ -78,8 +86,29 @@ public class PhillyDataUI {
         
         for(Map.Entry<Integer, Double> p : ret.entrySet()) {
             System.out.printf("%s \t %.4f\n", p.getKey(), p.getValue());
-            // System.out.println(p.getKey() + " " + p.getValue());
         }
+    }
+
+    /**
+     * Displays the residential market value per capita for a user-inputted ZIP code
+     * (i.e., total market value for all residences in the ZIP code divided by the population of that ZIP Code)
+     */
+    public void doMarketValPerCapitca() {
+        System.out.print("Enter a ZIP Code: ");
+        
+        int zipcode; 
+
+        try {
+            zipcode = Integer.parseInt(in.nextLine());
+        } catch(NumberFormatException | NullPointerException e) {
+            System.out.println("Invalid zipcode! Please enter a zipcode! \n");
+            return;
+        }
+        
+        int marketVal = processor.getMarketValPerCapita(zipcode);
+
+        System.out.printf("Residential Market Value per Capita of %d: %d \n", zipcode, marketVal);
+
     }
 }
 

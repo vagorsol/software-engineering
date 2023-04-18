@@ -100,10 +100,36 @@ public class PhillyDataProcessor {
             
             Double avg = ((double) val / (double) pop); 
             avg = ((double) Math.round(avg * 10000)) / 10000; 
-            // System.out.println("Calculating Average: " + z.getKey() + " " + avg);
             ret.put(z.getKey(), avg);
         }
 
         return ret; 
+    }
+
+    /**
+     * Displays the residential market value per capita for a user-inputted ZIP code
+     * (i.e., total market value for all residences in the ZIP code divided by the population of that ZIP Code)
+     * @param zip, the ZIP to get the market per capita at
+     * @return ret, the rounded integer market value per capita value
+     */
+    public int getMarketValPerCapita(int zip) {
+        int popAtZIP = getPopByZip(zip);
+        if (popAtZIP == 0) {
+            return 0;
+        }        
+
+        double sum = 0.0; 
+
+        for (PropertyValue p : propertyValue) {
+            if (p.getZip() == zip) {
+                sum += p.getMarketValue();
+            }
+        }
+        // System.out.println(sum);
+        double avg = sum / popAtZIP;
+        // System.out.println(avg);
+        int ret = (int) ((double) Math.round(avg * 10000)) / 10000; 
+        
+        return ret;
     }
 }
