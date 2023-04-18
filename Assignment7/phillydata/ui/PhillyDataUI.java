@@ -2,6 +2,8 @@ package phillydata.ui;
 
 import java.util.*;
 
+import phillydata.processor.LivableAreaAvg;
+import phillydata.processor.MarketValueAvg;
 import phillydata.processor.PhillyDataProcessor;
 
 public class PhillyDataUI {
@@ -42,7 +44,6 @@ public class PhillyDataUI {
             
             System.out.println(); // output readability
 
-            // todo:set them to prrocessors (or something)
             switch (userInput) {
                 case 0:
                     System.out.println("Program Closing!");
@@ -55,16 +56,16 @@ public class PhillyDataUI {
                     doFinesPerCapita();;
                     break;
                 case 3:
-                    System.out.println("Average Residential Market Value");
+                    doResidentialAverager(userInput);
                     break;
                 case 4: 
-                    System.out.println("Average Residential Total Liveable Area");
+                    doResidentialAverager(userInput);
                     break;
                 case 5:
                     doMarketValPerCapitca();
                     break;
                 default:
-                    System.out.println("Invalid Option! Please select one of the listed options!");
+                    System.out.println("Invalid Option! Please select one of the listed options!\n");
                     break;
             }
         }
@@ -87,8 +88,31 @@ public class PhillyDataUI {
         for(Map.Entry<Integer, Double> p : ret.entrySet()) {
             System.out.printf("%s \t %.4f\n", p.getKey(), p.getValue());
         }
+        System.out.println();
     }
 
+    public void doResidentialAverager(int option) {
+        System.out.print("Enter a ZIP Code: ");
+        
+        int zipcode; 
+
+        try {
+            zipcode = Integer.parseInt(in.nextLine());
+        } catch(NumberFormatException | NullPointerException e) {
+            System.out.println("\nInvalid zipcode! Please enter a zipcode! \n");
+            return;
+        }
+
+        // residential market value
+        if (option == 3) {
+            int avg = processor.getResidentialAverage(zipcode, new MarketValueAvg());
+            System.out.println("\nAverage Residential Market Value for ZIP " + zipcode + ": " + avg + "\n");
+        } 
+        if (option == 4) {
+            int avg = processor.getResidentialAverage(zipcode, new LivableAreaAvg());
+            System.out.println("\nAverage Residential Total Livable Area for ZIP " + zipcode + ": " + avg + "\n");
+        }
+    }
     /**
      * Displays the residential market value per capita for a user-inputted ZIP code
      * (i.e., total market value for all residences in the ZIP code divided by the population of that ZIP Code)
@@ -101,13 +125,13 @@ public class PhillyDataUI {
         try {
             zipcode = Integer.parseInt(in.nextLine());
         } catch(NumberFormatException | NullPointerException e) {
-            System.out.println("Invalid zipcode! Please enter a zipcode! \n");
+            System.out.println("\nInvalid zipcode! Please enter a zipcode! \n");
             return;
         }
         
         int marketVal = processor.getMarketValPerCapita(zipcode);
 
-        System.out.printf("Residential Market Value per Capita of %d: %d \n", zipcode, marketVal);
+        System.out.printf("\nResidential Market Value per Capita of %d: %d \n\n", zipcode, marketVal);
 
     }
 }

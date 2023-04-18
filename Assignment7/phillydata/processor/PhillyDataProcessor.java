@@ -48,21 +48,6 @@ public class PhillyDataProcessor {
     }
 
     /**
-     * Given a ZIP code, returns corresponding population in the population input file
-     * @param zip
-     * @return population iff that zip code exists in the population input file, else returns 0
-     * ? might change privacy level later
-     */
-    protected int getPopByZip(int zip) {
-        for(Population p : population) {
-            if (p.getZip() == zip){
-                return p.getPopulation();
-            }
-        }
-        return 0;
-    }
-
-    /**
      * For each zip code, get the average fines divided by the population of that zipcode
      * @return ret, zipcode with associated average amount of fines
      */
@@ -106,6 +91,27 @@ public class PhillyDataProcessor {
         return ret; 
     }
 
+    public int getResidentialAverage(int zip, ResidentialAverager averager) {
+        int houses = 0;
+
+        List<PropertyValue> pv = new ArrayList<>();
+        for (PropertyValue p : propertyValue) {
+            if (p.getZip() == zip) {
+                pv.add(p);
+                houses++;
+            }
+        }
+        
+        // if no houses then no average (and no division error)
+        if (houses == 0) {
+            return 0;
+        }
+
+        // call averager here w specification as to which value to divide by
+        int avg = averager.avgResidential(houses, pv);
+        return avg;
+    }
+
     /**
      * Displays the residential market value per capita for a user-inputted ZIP code
      * (i.e., total market value for all residences in the ZIP code divided by the population of that ZIP Code)
@@ -125,11 +131,25 @@ public class PhillyDataProcessor {
                 sum += p.getMarketValue();
             }
         }
-        // System.out.println(sum);
+
+        // round the market value per capita value
         double avg = sum / popAtZIP;
-        // System.out.println(avg);
         int ret = (int) ((double) Math.round(avg * 10000)) / 10000; 
         
         return ret;
+    }
+
+    /**
+     * Given a ZIP code, returns corresponding population in the population input file
+     * @param zip
+     * @return population iff that zip code exists in the population input file, else returns 0
+     */
+    protected int getPopByZip(int zip) {
+        for(Population p : population) {
+            if (p.getZip() == zip){
+                return p.getPopulation();
+            }
+        }
+        return 0;
     }
 }
