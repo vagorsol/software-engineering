@@ -1,17 +1,19 @@
 import java.util.*;
 
-// use lazy initialization, lazy evaluation, + memoization
 public class Worker {
     public int num = 0;  
+    private Map<Integer, Integer> calResult = new TreeMap<>(); 
  	private Calculator calc = new Calculator();
          
  	public int work() {
-              
-      	int result = calc.calculate(num); 
-              
-      	if (num < 0) return 0;
-      	else return result;
-                    
+        if (num < 0) return 0;
+        
+		if (calResult.containsKey(num)) {
+			return calResult.get(num);
+		} else {
+			int result = calc.calculate(num);
+			calResult.put(num, result);
+			return result; 
+		}                    
  	}
-
 }
